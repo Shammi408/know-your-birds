@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import {
   Image,
   Pressable,
@@ -15,7 +16,7 @@ import { Spacing } from '@/constants/theme';
 
 const BIRD_NAME = 'Indian Roller';
 
-const BIRD_IMAGE = require('../../assets/images/birds/indian-roller.jpg');
+const BIRD_IMAGE = require('../../../assets/images/birds/indian-roller.jpg');
 
 const HINTS = [
   'This bird is commonly found in the Indian subcontinent.',
@@ -24,6 +25,8 @@ const HINTS = [
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   const [guess, setGuess] = useState('');
   const [score, setScore] = useState(100);
   const [hintIndex, setHintIndex] = useState(-1);
@@ -48,6 +51,15 @@ export default function HomeScreen() {
     if (isCorrect) {
       setGameCompleted(true);
       setMessage('Correct! You identified the bird!');
+
+      router.replace({
+        pathname: '/result',
+        params: {
+          score: score.toString(),
+          identified: 'true',
+        },
+      });
+
       return;
     }
 
@@ -170,6 +182,23 @@ export default function HomeScreen() {
                 {gameCompleted ? 'COMPLETED' : 'GUESS'}
               </ThemedText>
             </Pressable>
+            <Pressable
+              style={styles.giveUpButton}
+              onPress={() => {
+                router.replace({
+                  pathname: '/result',
+                  params: {
+                    score: score.toString(),
+                    identified: 'false',
+                  },
+                });
+              }}
+              disabled={gameCompleted}
+            >
+              <ThemedText style={styles.giveUpButtonText}>
+                I DON'T KNOW
+              </ThemedText>
+            </Pressable>  
 
             {/* Feedback */}
             {message !== '' && (
@@ -310,6 +339,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  giveUpButton: {
+  width: '100%',
+  height: 44,
+  marginTop: Spacing.two,
+  borderRadius: Spacing.two,
+  alignItems: 'center',
+  justifyContent: 'center',
+  borderWidth: 1,
+  borderColor: '#777',
+  },
+
+  giveUpButtonText: {
+    fontWeight: '600',
+  },
+  
   message: {
     marginTop: Spacing.two,
     textAlign: 'center',
