@@ -1,34 +1,184 @@
-import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 
+const BIRD_NAME = 'Indian Roller';
+
+const BIRD_IMAGE = require('../../assets/images/birds/indian-roller.jpg');
+
+const HINTS = [
+  'This bird is commonly found in the Indian subcontinent.',
+  'It is known for its bright blue wings.',
+  'It belongs to the roller family.',
+];
+
 export default function HomeScreen() {
+  const [guess, setGuess] = useState('');
+  const [score, setScore] = useState(100);
+  const [hintIndex, setHintIndex] = useState(-1);
+  const [message, setMessage] = useState('');
+  const [gameCompleted, setGameCompleted] = useState(false);
+
+  const handleGuess = () => {
+    if (gameCompleted) {
+      return;
+    }
+
+    const trimmedGuess = guess.trim();
+
+    if (!trimmedGuess) {
+      setMessage('Please enter a bird name.');
+      return;
+    }
+
+    const isCorrect =
+      trimmedGuess.toLowerCase() === BIRD_NAME.toLowerCase();
+
+    if (isCorrect) {
+      setGameCompleted(true);
+      setMessage('Correct! You identified the bird!');
+      return;
+    }
+
+    setScore((currentScore) => Math.max(currentScore - 10, 0));
+
+    setHintIndex((currentIndex) =>
+      Math.min(currentIndex + 1, HINTS.length - 1)
+    );
+
+    setMessage('Not quite. Try again!');
+    setGuess('');
+  };
+
+  /*
+   * The image starts heavily blurred.
+   *
+   * After each wrong guess:
+   * 25 -> 17 -> 9
+   *
+   * Once the bird is correctly identified:
+   * 0 -> completely clear
+   */
+  const blurAmount = gameCompleted
+    ? 0
+    : hintIndex === -1
+      ? 25
+      : Math.max(25 - hintIndex * 8, 5);
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <ThemedText type="title" style={styles.title}>
-          Know Your Birds
-        </ThemedText>
-
-        <ThemedText type="subtitle" style={styles.subtitle}>
-          Guess the Bird of the Day
-        </ThemedText>
-
-        <ThemedView
-          type="backgroundElement"
-          style={styles.card}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
-          <ThemedText type="title" style={styles.cardTitle}>
-            🐦 Coming soon
-          </ThemedText>
+          {/* Header */}
+          <ThemedView style={styles.header}>
+            <ThemedText type="title" style={styles.title}>
+              Know Your Birds
+            </ThemedText>
 
-          <ThemedText style={styles.cardText}>
-            A new bird challenge will be waiting for you every day.
-          </ThemedText>
-        </ThemedView>
+            <ThemedText style={styles.subtitle}>
+              Guess the Bird of the Day
+            </ThemedText>
+          </ThemedView>
+
+          {/* Streak */}
+          <ThemedView style={styles.streakRow}>
+            <ThemedText style={styles.streakText}>
+              Streak: 0 days
+            </ThemedText>
+          </ThemedView>
+
+          {/* Daily Challenge */}
+          <ThemedView
+            type="backgroundElement"
+            style={styles.challengeCard}
+          >
+            <ThemedText type="subtitle" style={styles.challengeTitle}>
+              Today's Bird
+            </ThemedText>
+
+            {/* Bird Image */}
+            <View style={styles.imageContainer}>
+              <Image
+                source={BIRD_IMAGE}
+                style={styles.birdImage}
+                resizeMode="cover"
+                blurRadius={blurAmount}
+              />
+            </View>
+
+            {/* Score */}
+            <ThemedText style={styles.score}>
+              Score: {score}
+            </ThemedText>
+
+            {/* Hint */}
+            {hintIndex >= 0 && (
+              <View style={styles.hintBox}>
+                <ThemedText style={styles.hintLabel}>
+                  Hint
+                </ThemedText>
+
+                <ThemedText style={styles.hintText}>
+                  {HINTS[hintIndex]}
+                </ThemedText>
+              </View>
+            )}
+
+            {/* Question */}
+            <ThemedText style={styles.question}>
+              What bird is this?
+            </ThemedText>
+
+            {/* Guess Input */}
+            <TextInput
+              value={guess}
+              onChangeText={setGuess}
+              style={styles.input}
+              placeholder="Enter bird name"
+              placeholderTextColor="#888"
+              autoCapitalize="words"
+              autoCorrect={false}
+              editable={!gameCompleted}
+              onSubmitEditing={handleGuess}
+            />
+
+            {/* Guess Button */}
+            <Pressable
+              style={[
+                styles.guessButton,
+                gameCompleted && styles.guessButtonDisabled,
+              ]}
+              onPress={handleGuess}
+              disabled={gameCompleted}
+            >
+              <ThemedText style={styles.guessButtonText}>
+                {gameCompleted ? 'COMPLETED' : 'GUESS'}
+              </ThemedText>
+            </Pressable>
+
+            {/* Feedback */}
+            {message !== '' && (
+              <ThemedText style={styles.message}>
+                {message}
+              </ThemedText>
+            )}
+          </ThemedView>
+        </ScrollView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -41,35 +191,129 @@ const styles = StyleSheet.create({
 
   safeArea: {
     flex: 1,
-    alignItems: 'center',
     paddingHorizontal: Spacing.four,
   },
 
+  scrollContent: {
+    paddingBottom: Spacing.six,
+  },
+
+  header: {
+    alignItems: 'center',
+    marginTop: Spacing.two,
+  },
+
   title: {
-    marginTop: Spacing.six,
     textAlign: 'center',
   },
 
   subtitle: {
-    marginTop: Spacing.four,
+    marginTop: Spacing.one,
     textAlign: 'center',
   },
 
-  card: {
+  streakRow: {
+    alignItems: 'center',
+    marginTop: Spacing.three,
+  },
+
+  streakText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  challengeCard: {
     width: '100%',
-    marginTop: Spacing.two,
-    padding: Spacing.six,
+    marginTop: Spacing.three,
+    padding: Spacing.four,
     borderRadius: Spacing.four,
     alignItems: 'center',
   },
 
-  cardTitle: {
+  challengeTitle: {
     textAlign: 'center',
   },
 
-  cardText: {
+  imageContainer: {
+    width: '100%',
+    height: 190,
     marginTop: Spacing.three,
+    borderRadius: Spacing.four,
+    overflow: 'hidden',
+    backgroundColor: '#000000',
+  },
+
+  birdImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  score: {
+    marginTop: Spacing.three,
+    fontSize: 18,
+    fontWeight: '700',
+  },
+
+  hintBox: {
+    width: '100%',
+    marginTop: Spacing.two,
+    padding: Spacing.two,
+    borderRadius: Spacing.two,
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+
+  hintLabel: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+
+  hintText: {
+    marginTop: Spacing.one,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+
+  question: {
+    marginTop: Spacing.two,
+    fontSize: 17,
+    fontWeight: '600',
+  },
+
+  input: {
+    width: '100%',
+    height: 44,
+    marginTop: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    borderWidth: 1,
+    borderColor: '#777',
+    borderRadius: Spacing.two,
+    color: '#fff',
+    backgroundColor: 'rgba(255,255,255,0.08)',
+  },
+
+  guessButton: {
+    width: '100%',
+    height: 44,
+    marginTop: Spacing.two,
+    borderRadius: Spacing.two,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ffffff',
+  },
+
+  guessButtonDisabled: {
+    opacity: 0.5,
+  },
+
+  guessButtonText: {
+    color: '#000000',
+    fontWeight: '700',
+  },
+
+  message: {
+    marginTop: Spacing.two,
     textAlign: 'center',
-    lineHeight: 24,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
