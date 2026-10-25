@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
+import { setBirdStatus } from '../../storage/birdBankStorage';
 import {
   Image,
   Pressable,
@@ -76,6 +77,7 @@ export default function HomeScreen() {
       setGameCompleted(true);
       setMessage('Correct! You identified the bird!');
 
+      await setBirdStatus('indian_roller', 'identified');
       await markDailyChallengeCompleted(today);
 
       router.replace({
@@ -105,6 +107,7 @@ export default function HomeScreen() {
     if (nextScore === 0) {
       setGameCompleted(true);
 
+      await setBirdStatus('indian_roller', 'encountered');
       await markDailyChallengeCompleted(today);
 
       router.replace({
@@ -234,6 +237,7 @@ export default function HomeScreen() {
               <Pressable
                 style={styles.giveUpButton}
                 onPress={ async () => {
+                  await setBirdStatus('indian_roller', 'encountered');
                   await markDailyChallengeCompleted(today);
                   router.replace({
                     pathname: '/result',
