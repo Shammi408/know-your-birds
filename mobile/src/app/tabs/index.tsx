@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { setBirdStatus } from '../../storage/birdBankStorage';
+
 import {
   Image,
   Pressable,
