@@ -54,7 +54,7 @@ export default function BirdDetailsScreen() {
             ) : (
             <>  
                 <Image
-                    source={bird.image}
+                    source={{ uri: bird.image }}
                     style={styles.birdImage}
                     resizeMode="cover"
                 />

@@ -2,7 +2,7 @@ export type Bird = {
   id: string;
   commonName: string;
   scientificName: string;
-  image: number;
+  image: string;
   size: {
     minCm: number;
     maxCm: number;
@@ -22,7 +22,7 @@ export const BIRDS: Bird[] = [
     id: 'indian_roller',
     commonName: 'Indian Roller',
     scientificName: 'Coracias benghalensis',
-    image: require('../../assets/images/birds/indian-roller.jpg'),
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1793123860/indian-roller_okyy5v.jpg',
     size: {
       minCm: 30,
       maxCm: 34,
@@ -52,7 +52,7 @@ export const BIRDS: Bird[] = [
     id: 'house_sparrow',
     commonName: 'House Sparrow',
     scientificName: 'Passer domesticus',
-    image: 0,
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1793193605/House-sparrow_s0g2uo.png',
     size: {
       minCm: 14,
       maxCm: 18,
@@ -79,7 +79,7 @@ export const BIRDS: Bird[] = [
     id: 'common_kingfisher',
     commonName: 'Common Kingfisher',
     scientificName: 'Alcedo atthis',
-    image: 0,
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1793193621/Common-Kingfisher_yrdqzu.jpg',
     size: {
       minCm: 17,
       maxCm: 19,
