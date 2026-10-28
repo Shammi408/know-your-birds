@@ -105,6 +105,254 @@ export const BIRDS: Bird[] = [
     ],
     conservationStatus: 'Least Concern',
   },
+  {
+    id: 'indian_peafowl',
+    commonName: 'Indian Peafowl',
+    scientificName: 'Pavo cristatus',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196390/indian-peafowl_sh4ylj.png',
+    size: {
+      minCm: 100,
+      maxCm: 120,
+      category: 'large',
+    },
+    features:
+      'A large, striking bird with a blue-green body and an elaborate train of long feathers in males.',
+    habitat: [
+      'Deciduous forests',
+      'Open woodland',
+      'Agricultural areas',
+      'Bushy areas',
+    ],
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bhutan',
+      'Bangladesh',
+      'Sri Lanka',
+    ],
+    diet: 'Seeds, grains, fruits, insects, and small animals.',
+    behavior:
+      'Usually forages on the ground and males display their long train during courtship.',
+    funFacts: [
+      'The Indian Peafowl is the national bird of India.',
+      'The male can spread its long train into a spectacular fan during courtship.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'rose_ringed_parakeet',
+    commonName: 'Rose-ringed Parakeet',
+    scientificName: 'Psittacula krameri',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196390/rose-ringed-parakeet_usdpjz.png',
+    size: {
+      minCm: 40,
+      maxCm: 42,
+      category: 'large',
+    },
+    features:
+      'A bright green parakeet with a red bill and a long pointed tail; adult males have a distinctive neck ring.',
+    habitat: [
+      'Open woodland',
+      'Agricultural areas',
+      'Parks',
+      'Gardens',
+      'Cities',
+    ],
+    range: [
+      'India',
+      'Pakistan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Africa',
+    ],
+    diet: 'Seeds, fruits, grains, and other plant foods.',
+    behavior:
+      'Highly social and often seen flying or feeding in noisy flocks.',
+    funFacts: [
+      'Large flocks can gather around cultivated fruits and grains.',
+      'The male develops its characteristic neck ring as it matures.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'red_vented_bulbul',
+    commonName: 'Red-vented Bulbul',
+    scientificName: 'Pycnonotus cafer',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196391/red-vented-bulbul_jopqnx.jpg',
+    size: {
+      minCm: 20,
+      maxCm: 23,
+      category: 'medium',
+    },
+    features:
+      'A dark, medium-sized songbird with a pointed black crest, white rump, and distinctive red patch beneath the tail.',
+    habitat: [
+      'Gardens',
+      'Parks',
+      'Agricultural areas',
+      'Scrubland',
+      'Open woodland',
+    ],
+    range: [
+      'India',
+      'South Asia',
+      'Southeast Asia',
+    ],
+    diet: 'Fruits, insects, nectar, flowers, and other plant material.',
+    behavior:
+      'Often seen in pairs or small groups while foraging in trees and shrubs.',
+    funFacts: [
+      'Its red vent is often hidden unless the bird moves or flies.',
+      'It is commonly seen around towns, gardens, and other human settlements.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'purple_sunbird',
+    commonName: 'Purple Sunbird',
+    scientificName: 'Cinnyris asiaticus',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196389/purple-sunbird_klughx.jpg',
+    size: {
+      minCm: 9,
+      maxCm: 10,
+      category: 'small',
+    },
+    features:
+      'A tiny sunbird with a short curved bill; breeding males have glossy metallic purple-black plumage.',
+    habitat: [
+      'Gardens',
+      'Groves',
+      'Cultivated areas',
+      'Scrubland',
+      'Light woodland',
+    ],
+    range: [
+      'India',
+      'Pakistan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Southeast Asia',
+    ],
+    diet: 'Primarily flower nectar, along with insects and spiders.',
+    behavior:
+      'Moves actively between flowers and may hover briefly while feeding on nectar.',
+    funFacts: [
+      'The male can appear almost black until its purple iridescence catches the light.',
+      'Its curved bill and brush-tipped tongue help it feed on nectar.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'white_throated_kingfisher',
+    commonName: 'White-throated Kingfisher',
+    scientificName: 'Halcyon smyrnensis',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196388/white-throated-kingfisher_n8lhgp.png',
+    size: {
+      minCm: 27,
+      maxCm: 29,
+      category: 'medium',
+    },
+    features:
+      'A brightly colored kingfisher with blue wings and back, a chestnut head and body, a white throat, and a red bill.',
+    habitat: [
+      'Open country',
+      'Gardens',
+      'Parks',
+      'Woodland',
+      'Areas near water',
+    ],
+    range: [
+      'India',
+      'Pakistan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Southeast Asia',
+    ],
+    diet: 'Fish, insects, frogs, small reptiles, crustaceans, and other small prey.',
+    behavior:
+      'Often waits on an exposed perch before rapidly diving or swooping down to capture prey.',
+    funFacts: [
+      'Despite being a kingfisher, it can hunt successfully away from water.',
+      'Its bright white throat contrasts strongly with its chestnut head and blue wings.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'black_kite',
+    commonName: 'Black Kite',
+    scientificName: 'Milvus migrans',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196389/black-kite_iir0gf.png',
+    size: {
+      minCm: 47,
+      maxCm: 60,
+      category: 'large',
+    },
+    features:
+      'A medium-to-large brown raptor with broad wings and a distinctive forked tail.',
+    habitat: [
+      'Cities',
+      'Open countryside',
+      'Agricultural areas',
+      'Wetlands',
+      'Areas near human settlements',
+    ],
+    range: [
+      'India',
+      'Asia',
+      'Africa',
+      'Europe',
+    ],
+    diet: 'Small animals, fish, insects, carrion, and food scraps.',
+    behavior:
+      'Often soars high in the sky while searching for food and readily scavenges around human settlements.',
+    funFacts: [
+      'Black Kites are commonly seen soaring over Indian cities.',
+      'They can exploit rising air currents to glide with little flapping.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
+  {
+    id: 'greater_coucal',
+    commonName: 'Greater Coucal',
+    scientificName: 'Centropus sinensis',
+    image:
+      'https://res.cloudinary.com/dfye11jlj/image/upload/v1793196388/greater-coucal_ddotme.jpg',
+    size: {
+      minCm: 47,
+      maxCm: 56,
+      category: 'large',
+    },
+    features:
+      'A large, long-tailed bird with a glossy black head and body, chestnut-brown wings, and striking red eyes.',
+    habitat: [
+      'Jungles',
+      'Scrubland',
+      'Cultivated areas',
+      'Grassland edges',
+      'Urban gardens',
+    ],
+    range: [
+      'India',
+      'Bangladesh',
+      'Sri Lanka',
+      'Southeast Asia',
+    ],
+    diet: 'Insects, caterpillars, snails, eggs, nestlings, fruits, seeds, and small vertebrates.',
+    behavior:
+      'A mostly terrestrial bird that moves through dense vegetation and walks on the ground while foraging.',
+    funFacts: [
+      'The Greater Coucal is a cuckoo that raises its own young rather than being a brood parasite.',
+      'It is a relatively weak flier and spends much of its time moving through vegetation.',
+    ],
+    conservationStatus: 'Least Concern',
+  },
 ];
 
 export function getBirdById(birdId: string): Bird | undefined {
