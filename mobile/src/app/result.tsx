@@ -1,24 +1,25 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { router } from 'expo-router';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 
-const BIRD_IMAGE = require('../../assets/images/birds/indian-roller.jpg');
+import { getBirdById } from '../data/birds';
 
 export default function ResultScreen() {
   const router = useRouter();
 
-  const { score, identified } = useLocalSearchParams<{
+  const { score, identified, birdId } = useLocalSearchParams<{
     score?: string;
     identified?: string;
+    birdId?: string;
   }>();
 
 const dailyScore = Number(score ?? 0);
 const isIdentified = identified === 'true';
+const bird = birdId ? getBirdById(birdId) : undefined;
 
   return (
     <ThemedView style={styles.container}>
@@ -42,17 +43,17 @@ const isIdentified = identified === 'true';
             style={styles.card}
           >
             <Image
-              source={BIRD_IMAGE}
+              source={{ uri: bird?.image }}
               style={styles.birdImage}
               resizeMode="cover"
             />
 
             <ThemedText type="subtitle" style={styles.birdName}>
-              Indian Roller
+              {bird?.commonName}
             </ThemedText>
 
             <ThemedText style={styles.scientificName}>
-              Coracias benghalensis
+              {bird?.scientificName}
             </ThemedText>
 
             <View style={styles.statsContainer}>

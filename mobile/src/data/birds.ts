@@ -15,6 +15,7 @@ export type Bird = {
   behavior: string;
   funFacts: string[];
   conservationStatus: string;
+  hints: string[];
 };
 
 export const BIRDS: Bird[] = [
@@ -47,6 +48,11 @@ export const BIRDS: Bird[] = [
       'It is commonly seen perched on wires and exposed branches.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This bird is commonly found in the Indian subcontinent.',
+      'It is known for its bright blue wings.',
+      'It belongs to the roller family.',
+    ],
   },
   {
     id: 'house_sparrow',
@@ -74,6 +80,12 @@ export const BIRDS: Bird[] = [
       'They often build nests in buildings and other man-made structures.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a small bird commonly seen around human settlements.',
+      'It often feeds on seeds, grains, and food scraps.',
+      'It is highly social and often seen in groups.',
+      'It belongs to the sparrow family.',
+    ],
   },
   {
     id: 'common_kingfisher',
@@ -104,6 +116,11 @@ export const BIRDS: Bird[] = [
       'Its bright blue appearance is produced partly by the structure of its feathers.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a small bird often found near freshwater.',
+      'It has bright blue-green upperparts and orange underparts.',
+      'It dives into water to catch small fish.',
+    ],
   },
   {
     id: 'indian_peafowl',
@@ -140,6 +157,11 @@ export const BIRDS: Bird[] = [
       'The male can spread its long train into a spectacular fan during courtship.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a large bird commonly associated with the Indian subcontinent.',
+      'The male has an elaborate train of long feathers.',
+      'It is the national bird of India.',
+    ],
   },
   {
     id: 'rose_ringed_parakeet',
@@ -176,6 +198,11 @@ export const BIRDS: Bird[] = [
       'The male develops its characteristic neck ring as it matures.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a bright green bird with a long pointed tail.',
+      'It has a distinctive red bill.',
+      'Adult males develop a characteristic neck ring.',
+    ],
   },
   {
     id: 'red_vented_bulbul',
@@ -210,6 +237,11 @@ export const BIRDS: Bird[] = [
       'It is commonly seen around towns, gardens, and other human settlements.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a medium-sized songbird with a pointed crest.',
+      'It has a distinctive red patch beneath the tail.',
+      'It is commonly seen around gardens and human settlements.',
+    ],
   },
   {
     id: 'purple_sunbird',
@@ -246,6 +278,11 @@ export const BIRDS: Bird[] = [
       'Its curved bill and brush-tipped tongue help it feed on nectar.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a very small bird commonly found around flowers.',
+      'It feeds mainly on nectar, along with insects and spiders.',
+      'Breeding males have glossy purple-black plumage.',
+    ],
   },
   {
     id: 'white_throated_kingfisher',
@@ -282,6 +319,11 @@ export const BIRDS: Bird[] = [
       'Its bright white throat contrasts strongly with its chestnut head and blue wings.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This colorful bird has blue wings and a chestnut-colored body.',
+      'It has a distinctive white throat and red bill.',
+      'Despite its name, it can hunt successfully away from water.',
+    ],
   },
   {
     id: 'black_kite',
@@ -317,6 +359,11 @@ export const BIRDS: Bird[] = [
       'They can exploit rising air currents to glide with little flapping.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a large bird of prey commonly seen soaring overhead.',
+      'It has broad wings and a distinctive forked tail.',
+      'It is commonly seen around Indian cities and human settlements.',
+    ],
   },
   {
     id: 'greater_coucal',
@@ -352,6 +399,11 @@ export const BIRDS: Bird[] = [
       'It is a relatively weak flier and spends much of its time moving through vegetation.',
     ],
     conservationStatus: 'Least Concern',
+    hints: [
+      'This is a large bird with a long tail and reddish-brown wings.',
+      'It often moves through dense vegetation and walks on the ground.',
+      'It is a member of the cuckoo family.',
+    ],
   },
 ];
 

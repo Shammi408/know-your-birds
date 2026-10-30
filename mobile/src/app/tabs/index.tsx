@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { setBirdStatus } from '../../storage/birdBankStorage';
-
+import { getDailyBird } from '../../data/dailyBird';
+ 
 import {
   Image,
   Pressable,
@@ -20,24 +21,20 @@ import {
   markDailyChallengeCompleted,
 } from '../../storage/dailyChallengeStorage';
 
-const BIRD_NAME = 'Indian Roller';
-const BIRD_IMAGE = require('../../../assets/images/birds/indian-roller.jpg');
-
+// const BIRD_NAME = 'Indian Roller';
+// const BIRD_IMAGE = require('../../../assets/images/birds/indian-roller.jpg');
+const today = new Date().toISOString().split('T')[0];
+const DAILY_BIRD = getDailyBird(today);
 const STARTING_SCORE = 100;
 const WRONG_GUESS_PENALTY = 10;
 const HINT_PENALTY = 10;
 const GIVE_UP_SCORE = 10;
 
-const HINTS = [
-  'This bird is commonly found in the Indian subcontinent.',
-  'It is known for its bright blue wings.',
-  'It belongs to the roller family.',
-];
-
 export default function HomeScreen() {
   const router = useRouter();
 
   const today = new Date().toISOString().split('T')[0];
+  const dailyBird = getDailyBird(today);
 
   const [guess, setGuess] = useState('');
   const [score, setScore] = useState(STARTING_SCORE);
@@ -72,13 +69,13 @@ export default function HomeScreen() {
     }
 
     const isCorrect =
-      trimmedGuess.toLowerCase() === BIRD_NAME.toLowerCase();
+      trimmedGuess.toLowerCase() === dailyBird.commonName.toLowerCase();
 
     if (isCorrect) {
       setGameCompleted(true);
       setMessage('Correct! You identified the bird!');
 
-      await setBirdStatus('indian_roller', 'identified');
+      await setBirdStatus(dailyBird.id, 'identified');
       await markDailyChallengeCompleted(today);
 
       router.replace({
@@ -86,6 +83,7 @@ export default function HomeScreen() {
         params: {
           score: score.toString(),
           identified: 'true',
+          birdId: dailyBird.id,
         },
       });
 
@@ -100,7 +98,7 @@ export default function HomeScreen() {
     setScore(nextScore);
 
     setHintIndex((currentIndex) =>
-      Math.min(currentIndex + 1, HINTS.length - 1)
+      Math.min(currentIndex + 1, dailyBird.hints.length - 1)
     );
 
     setGuess('');
@@ -108,7 +106,7 @@ export default function HomeScreen() {
     if (nextScore === 0) {
       setGameCompleted(true);
 
-      await setBirdStatus('indian_roller', 'encountered');
+      await setBirdStatus( dailyBird.id, 'encountered');
       await markDailyChallengeCompleted(today);
 
       router.replace({
@@ -116,6 +114,7 @@ export default function HomeScreen() {
         params: {
           score: GIVE_UP_SCORE.toString(),
           identified: 'false',
+          birdId: dailyBird.id,
         },
       });
 
@@ -179,7 +178,7 @@ export default function HomeScreen() {
               {/* Bird Image */}
               <View style={styles.imageContainer}>
                 <Image
-                  source={BIRD_IMAGE}
+                  source={{ uri: dailyBird.image }}
                   style={styles.birdImage}
                   resizeMode="cover"
                   blurRadius={blurAmount}
@@ -199,7 +198,7 @@ export default function HomeScreen() {
                   </ThemedText>
 
                   <ThemedText style={styles.hintText}>
-                    {HINTS[hintIndex]}
+                    {dailyBird.hints[hintIndex]}
                   </ThemedText>
                 </View>
               )}
@@ -238,13 +237,14 @@ export default function HomeScreen() {
               <Pressable
                 style={styles.giveUpButton}
                 onPress={ async () => {
-                  await setBirdStatus('indian_roller', 'encountered');
+                  await setBirdStatus(dailyBird.id, 'encountered');
                   await markDailyChallengeCompleted(today);
                   router.replace({
                     pathname: '/result',
                     params: {
                       score: GIVE_UP_SCORE.toString(),
                       identified: 'false',
+                      birdId: dailyBird.id,
                     },
                   });
                 }}
