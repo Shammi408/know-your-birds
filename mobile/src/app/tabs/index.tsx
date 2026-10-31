@@ -20,6 +20,7 @@ import {
   getDailyChallengeCompletedDate,
   markDailyChallengeCompleted,
 } from '../../storage/dailyChallengeStorage';
+import { getProfileData, addXp, } from '../../storage/profileStorage';
 
 const today = new Date().toISOString().split('T')[0];
 const DAILY_BIRD = getDailyBird(today);
@@ -41,6 +42,7 @@ export default function HomeScreen() {
   const [gameCompleted, setGameCompleted] = useState(false);
   const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
 
+  
   useEffect(() => {
     async function checkDailyChallenge() {
       const completedDate = await getDailyChallengeCompletedDate();
@@ -76,6 +78,7 @@ export default function HomeScreen() {
       await setBirdStatus(dailyBird.id, 'identified');
       await markDailyChallengeCompleted(today);
       await updateStreak(today);
+      await addXp(score);
 
       router.replace({
         pathname: '/result',
@@ -108,6 +111,7 @@ export default function HomeScreen() {
       await setBirdStatus( dailyBird.id, 'encountered');
       await markDailyChallengeCompleted(today);
       await updateStreak(today);
+      await addXp(GIVE_UP_SCORE);
 
       router.replace({
         pathname: '/result',
@@ -240,6 +244,7 @@ export default function HomeScreen() {
                   await setBirdStatus(dailyBird.id, 'encountered');
                   await markDailyChallengeCompleted(today);
                   await updateStreak(today);
+                  await addXp(GIVE_UP_SCORE);
                   router.replace({
                     pathname: '/result',
                     params: {
