@@ -15,19 +15,21 @@ export default function BirdDetailsScreen() {
     const [status, setStatus] = useState<BirdStatus>('not_encountered');
 
     useEffect(() => {
-    async function loadBird() {
-        if (!birdId) {
-        return;
+        async function loadBird() {
+            // console.log('birdId from route:', birdId);
+            if (!birdId) {
+                return;
+            }
+
+            const birdData = getBirdById(birdId);
+            // console.log('birdData found:', birdData);
+            const birdStatus = await getBirdStatus(birdId);
+
+            setBird(birdData);
+            setStatus(birdStatus);
         }
 
-        const birdData = getBirdById(birdId);
-        const birdStatus = await getBirdStatus(birdId);
-
-        setBird(birdData);
-        setStatus(birdStatus);
-    }
-
-    loadBird();
+        loadBird();
     }, [birdId]);
     return (
     <SafeAreaView style={styles.container}>
@@ -36,12 +38,15 @@ export default function BirdDetailsScreen() {
                 ← Back
             </ThemedText>
         </Pressable>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
+        <ScrollView 
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            >
             <ThemedText type="title" style={styles.title}>
             Bird Details
             </ThemedText>
 
-            {status === 'not_encountered' || !bird ? (
+            {!bird ? (
             <>
                 <ThemedText type="title">
                 Unknown Bird
@@ -73,7 +78,11 @@ export default function BirdDetailsScreen() {
                                 : styles.encounteredStatus,
                             ]}
                 >
-                    {status === 'identified' ? 'Identified' : 'Encountered'}
+                    {status === 'identified'
+                    ? 'Identified'
+                    : status === 'encountered'
+                        ? 'Encountered'
+                        : 'Not Encountered'}
                 </ThemedText>
                 <ThemedText type="subtitle" style={styles.sectionTitle}>
                     Size
@@ -195,5 +204,9 @@ const styles = StyleSheet.create({
 
     scrollContent: {
     paddingBottom: 40,
+    },
+
+    notEncounteredStatus: {
+        color: '#888888',
     },
 });
