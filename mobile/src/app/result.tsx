@@ -6,7 +6,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 
+import { useState, useEffect } from 'react';
 import { getBirdById } from '../data/birds';
+import { getStreakData } from '../storage/streakStorage';
 
 export default function ResultScreen() {
   const router = useRouter();
@@ -17,9 +19,19 @@ export default function ResultScreen() {
     birdId?: string;
   }>();
 
-const dailyScore = Number(score ?? 0);
-const isIdentified = identified === 'true';
-const bird = birdId ? getBirdById(birdId) : undefined;
+  const dailyScore = Number(score ?? 0);
+  const isIdentified = identified === 'true';
+  const bird = birdId ? getBirdById(birdId) : undefined;
+  const [currentStreak, setCurrentStreak] = useState(0);
+
+  useEffect(() => {
+    async function loadStreak() {
+      const streakData = await getStreakData();
+      setCurrentStreak(streakData.currentStreak);
+    }
+
+    loadStreak();
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
@@ -83,7 +95,7 @@ const bird = birdId ? getBirdById(birdId) : undefined;
                 </ThemedText>
 
                 <ThemedText style={styles.statValue}>
-                  1 day
+                  {currentStreak} {currentStreak === 1 ? 'day' : 'days'}
                 </ThemedText>
               </View>
             </View>

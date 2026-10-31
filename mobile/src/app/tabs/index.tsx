@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { setBirdStatus } from '../../storage/birdBankStorage';
 import { getDailyBird } from '../../data/dailyBird';
- 
+import { updateStreak } from '../../storage/streakStorage';
 import {
   Image,
   Pressable,
@@ -21,8 +21,6 @@ import {
   markDailyChallengeCompleted,
 } from '../../storage/dailyChallengeStorage';
 
-// const BIRD_NAME = 'Indian Roller';
-// const BIRD_IMAGE = require('../../../assets/images/birds/indian-roller.jpg');
 const today = new Date().toISOString().split('T')[0];
 const DAILY_BIRD = getDailyBird(today);
 const STARTING_SCORE = 100;
@@ -77,6 +75,7 @@ export default function HomeScreen() {
 
       await setBirdStatus(dailyBird.id, 'identified');
       await markDailyChallengeCompleted(today);
+      await updateStreak(today);
 
       router.replace({
         pathname: '/result',
@@ -108,6 +107,7 @@ export default function HomeScreen() {
 
       await setBirdStatus( dailyBird.id, 'encountered');
       await markDailyChallengeCompleted(today);
+      await updateStreak(today);
 
       router.replace({
         pathname: '/result',
@@ -239,6 +239,7 @@ export default function HomeScreen() {
                 onPress={ async () => {
                   await setBirdStatus(dailyBird.id, 'encountered');
                   await markDailyChallengeCompleted(today);
+                  await updateStreak(today);
                   router.replace({
                     pathname: '/result',
                     params: {
