@@ -10,10 +10,14 @@ import { getBirdStatus, BirdStatus } from '../storage/birdBankStorage';
 
 export default function BirdDetailsScreen() {
     const router = useRouter();
-    const { birdId } = useLocalSearchParams<{ birdId: string }>();
+    const { birdId, source } = useLocalSearchParams<{
+        birdId: string;
+        source: string;
+    }>();
     const [bird, setBird] = useState<Bird | undefined>();
     const [status, setStatus] = useState<BirdStatus>('not_encountered');
 
+    
     useEffect(() => {
         async function loadBird() {
             // console.log('birdId from route:', birdId);
@@ -31,6 +35,12 @@ export default function BirdDetailsScreen() {
 
         loadBird();
     }, [birdId]);
+
+    const canViewDetails =
+        source === 'explore' ||
+        status === 'encountered' ||
+        status === 'identified';
+        
     return (
     <SafeAreaView style={styles.container}>
         <Pressable onPress={() => router.back()}>
@@ -46,7 +56,7 @@ export default function BirdDetailsScreen() {
             Bird Details
             </ThemedText>
 
-            {!bird ? (
+            {!bird || !canViewDetails ? (
             <>
                 <ThemedText type="title">
                 Unknown Bird

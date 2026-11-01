@@ -52,6 +52,7 @@ export default function BirdBankScreen() {
               pathname: '/bird-details',
               params: {
                 birdId: entry.bird.id,
+                source: 'bird-bank',
               },
             })
           }

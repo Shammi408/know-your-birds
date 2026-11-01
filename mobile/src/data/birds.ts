@@ -448,7 +448,7 @@ export const BIRDS: Bird[] = [
     continents: ['Asia'],
     difficulty: 'medium',
     aliases: [],
-    active: true,
+    active: false,
   },
 ];
 

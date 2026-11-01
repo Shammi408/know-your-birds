@@ -7,10 +7,11 @@ function dateToNumber(date: string): number {
 }
 
 function getCandidateBird(date: string): Bird {
+  const activeBirds = BIRDS.filter((bird) => bird.active);
   const dayNumber = dateToNumber(date);
-  const index = dayNumber % BIRDS.length;
+  const index = dayNumber % activeBirds.length;
 
-  return BIRDS[index];
+  return activeBirds[index];
 }
 
 function getPreviousDate(date: string): string {

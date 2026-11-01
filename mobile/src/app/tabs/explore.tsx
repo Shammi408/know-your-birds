@@ -137,6 +137,7 @@ export default function ExploreScreen() {
                   pathname: '/bird-details',
                   params: {
                     birdId: bird.id,
+                    source: 'explore',
                   },
                 })
               }
