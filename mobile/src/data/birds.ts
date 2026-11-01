@@ -11,11 +11,16 @@ export type Bird = {
   features: string;
   habitat: string[];
   range: string[];
+  continents: string[];
   diet: string;
   behavior: string;
   funFacts: string[];
   conservationStatus: string;
   hints: string[];
+
+  difficulty: 'easy' | 'medium' | 'hard';
+  aliases: string[];
+  active: boolean;
 };
 
 export const BIRDS: Bird[] = [
@@ -53,6 +58,10 @@ export const BIRDS: Bird[] = [
       'It is known for its bright blue wings.',
       'It belongs to the roller family.',
     ],
+    continents: ['Asia'],
+    difficulty: 'medium',
+    aliases: [],
+    active: true,
   },
   {
     id: 'house_sparrow',
@@ -86,6 +95,10 @@ export const BIRDS: Bird[] = [
       'It is highly social and often seen in groups.',
       'It belongs to the sparrow family.',
     ],
+    continents: ['Africa', 'Asia', 'Europe'],
+    difficulty: 'easy',
+    aliases: [],
+    active: true,
   },
   {
     id: 'common_kingfisher',
@@ -121,6 +134,10 @@ export const BIRDS: Bird[] = [
       'It has bright blue-green upperparts and orange underparts.',
       'It dives into water to catch small fish.',
     ],
+    continents: ['Africa', 'Asia', 'Europe'],
+    difficulty: 'medium',
+    aliases: [],
+    active: true,
   },
   {
     id: 'indian_peafowl',
@@ -162,6 +179,10 @@ export const BIRDS: Bird[] = [
       'The male has an elaborate train of long feathers.',
       'It is the national bird of India.',
     ],
+    continents: ['Asia'],
+    difficulty: 'easy',
+    aliases: ['Indian Peacock'],
+    active: true,
   },
   {
     id: 'rose_ringed_parakeet',
@@ -203,6 +224,10 @@ export const BIRDS: Bird[] = [
       'It has a distinctive red bill.',
       'Adult males develop a characteristic neck ring.',
     ],
+    continents: ['Africa', 'Asia', 'Europe'],
+    difficulty: 'medium',
+    aliases: ['Ring-necked Parakeet', 'Parrot'],
+    active: true,
   },
   {
     id: 'red_vented_bulbul',
@@ -242,6 +267,10 @@ export const BIRDS: Bird[] = [
       'It has a distinctive red patch beneath the tail.',
       'It is commonly seen around gardens and human settlements.',
     ],
+    continents: ['Asia'],
+    difficulty: 'easy',
+    aliases: [],
+    active: true,
   },
   {
     id: 'purple_sunbird',
@@ -283,6 +312,10 @@ export const BIRDS: Bird[] = [
       'It feeds mainly on nectar, along with insects and spiders.',
       'Breeding males have glossy purple-black plumage.',
     ],
+    continents: ['Asia'],
+    difficulty: 'medium',
+    aliases: [],
+    active: true,
   },
   {
     id: 'white_throated_kingfisher',
@@ -324,6 +357,10 @@ export const BIRDS: Bird[] = [
       'It has a distinctive white throat and red bill.',
       'Despite its name, it can hunt successfully away from water.',
     ],
+    continents: ['Asia'],
+    difficulty: 'medium',
+    aliases: ['White-breasted Kingfisher'],
+    active: true,
   },
   {
     id: 'black_kite',
@@ -364,6 +401,10 @@ export const BIRDS: Bird[] = [
       'It has broad wings and a distinctive forked tail.',
       'It is commonly seen around Indian cities and human settlements.',
     ],
+    continents: ['Africa', 'Asia', 'Europe'],
+    difficulty: 'medium',
+    aliases: [],
+    active: true,
   },
   {
     id: 'greater_coucal',
@@ -404,6 +445,10 @@ export const BIRDS: Bird[] = [
       'It often moves through dense vegetation and walks on the ground.',
       'It is a member of the cuckoo family.',
     ],
+    continents: ['Asia'],
+    difficulty: 'medium',
+    aliases: [],
+    active: true,
   },
 ];
 

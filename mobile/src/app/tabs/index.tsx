@@ -43,6 +43,7 @@ export default function HomeScreen() {
   const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
 
   
+  
   useEffect(() => {
     async function checkDailyChallenge() {
       const completedDate = await getDailyChallengeCompletedDate();
@@ -67,9 +68,14 @@ export default function HomeScreen() {
       setMessage('Please enter a bird name.');
       return;
     }
+    const normalizedGuess = trimmedGuess.toLowerCase();
 
     const isCorrect =
-      trimmedGuess.toLowerCase() === dailyBird.commonName.toLowerCase();
+      normalizedGuess === dailyBird.commonName.toLowerCase() ||
+      dailyBird.aliases.some(
+        (alias) => normalizedGuess === alias.toLowerCase()
+      );
+
 
     if (isCorrect) {
       setGameCompleted(true);
