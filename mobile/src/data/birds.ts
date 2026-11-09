@@ -448,7 +448,671 @@ export const BIRDS: Bird[] = [
     continents: ['Asia'],
     difficulty: 'medium',
     aliases: [],
-    active: false,
+    active: true,
+  },
+  {
+    id: 'rock_pigeon',
+    commonName: 'Rock Pigeon',
+    scientificName: 'Columba livia',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794223946/Rock_pigeon_or_common_pigeon__Columba_livia_xkibss.jpg',
+
+    size: {
+      minCm: 33,
+      maxCm: 33,
+      category: 'medium',
+    },
+
+    features:
+      'A medium-sized pigeon, usually with a grey-blue body, iridescent green and purple feathers around the neck, two dark wing bars, and reddish feet. Plumage can vary considerably.',
+
+    habitat: [
+      'Rocky cliffs',
+      'Urban buildings and structures',
+      'Farmland',
+      'Parks and gardens',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Afghanistan',
+      'Nepal',
+    ],
+
+    continents: [
+      'Asia',
+      'Europe',
+      'Africa',
+    ],
+
+    diet:
+      'Primarily seeds and grains. It also consumes insects and human food scraps when available.',
+
+    behavior:
+      'Often feeds on the ground in groups. It nests on rocky ledges, cliffs, and building structures.',
+
+    funFacts: [
+      'Both male and female pigeons produce a nutritious substance called crop milk to feed their young.',
+      'Domestic and feral pigeons descend from the Rock Dove.',
+      'Pigeons have historically been used as homing and messenger birds.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is commonly seen in cities and towns.',
+      'It often has grey-blue feathers and two dark bars on its wings.',
+      'It belongs to the pigeon and dove family.',
+    ],
+
+    difficulty: 'easy',
+
+    aliases: [
+      'Rock Dove',
+      'Common Pigeon',
+      'City Pigeon',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'common_myna',
+    commonName: 'Common Myna',
+    scientificName: 'Acridotheres tristis',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794224493/Common-Myna_qbqu8c.jpg',
+
+    size: {
+      minCm: 23,
+      maxCm: 26,
+      category: 'medium',
+    },
+
+    features:
+      'A brown-bodied bird with a black head, bright yellow bill, yellow legs, and a distinctive patch of bare yellow skin behind each eye. It has white patches on its wings that are especially visible during flight.',
+
+    habitat: [
+      'Urban areas and towns',
+      'Gardens and parks',
+      'Farmland and cultivated areas',
+      'Open woodland',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Afghanistan',
+      'Nepal',
+      'Bangladesh',
+      'Sri Lanka',
+    ],
+
+    continents: [
+      'Asia',
+    ],
+
+    diet:
+      'An omnivorous bird that eats insects, fruits, seeds, grains, nectar, and food scraps. It often searches for food on the ground.',
+
+    behavior:
+      'Often seen walking and hopping on lawns and open ground. It nests in cavities in trees and buildings and can gather in noisy communal roosts.',
+
+    funFacts: [
+      'Common Mynas produce a wide variety of calls, including whistles, chirps, and harsh squawks.',
+      'They are highly adaptable birds and have established populations in many regions outside their native range.',
+      'They are known to defend their nesting territories aggressively.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is commonly seen around homes, gardens, and cities.',
+      'It has a brown body, black head, and bright yellow patch behind its eyes.',
+      'It belongs to the starling family.',
+    ],
+
+    difficulty: 'easy',
+
+    aliases: [
+      'Indian Myna',
+      'Indian Mynah',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'barn_swallow',
+    commonName: 'Barn Swallow',
+    scientificName: 'Hirundo rustica',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794224855/European-Swallow_vx688n.jpg',
+
+    size: {
+      minCm: 15,
+      maxCm: 19,
+      category: 'small',
+    },
+
+    features:
+      'A small, slender bird with glossy dark blue upperparts, a rufous forehead and throat, and pale underparts. Its most distinctive feature is its long, deeply forked tail.',
+
+    habitat: [
+      'Open fields and grasslands',
+      'Farmland and agricultural areas',
+      'Wetlands and areas near water',
+      'Villages, towns, and rural buildings',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Bangladesh',
+      'Nepal',
+      'Sri Lanka',
+    ],
+
+    continents: [
+      'Asia',
+      'Europe',
+      'Africa',
+      'North America',
+      'South America',
+    ],
+
+    diet:
+      'Feeds mainly on flying insects such as flies, beetles, moths, and other small insects, which it catches while flying.',
+
+    behavior:
+      'An agile flyer that often swoops low over fields and water to catch insects. It commonly builds cup-shaped mud nests on sheltered ledges and human-made structures.',
+
+    funFacts: [
+      'Barn Swallows build their nests using mud pellets mixed with grass and other plant fibres.',
+      'They can catch insects while flying and even drink water by skimming across its surface.',
+      'They are long-distance migrants, with populations travelling between breeding and wintering grounds.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird catches most of its food while flying.',
+      'It has glossy blue upperparts and a very long, deeply forked tail.',
+      'It builds cup-shaped nests using mud, often on buildings and bridges.',
+    ],
+
+    difficulty: 'medium',
+
+    aliases: [
+      'European Swallow',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'house_crow',
+    commonName: 'House Crow',
+    scientificName: 'Corvus splendens',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794225898/House_Crow_ra8nvx.jpg',
+
+    size: {
+      minCm: 40,
+      maxCm: 42,
+      category: 'medium',
+    },
+
+    features:
+      'A slender crow with a glossy black head, wings, and tail. Its nape, neck, and upper breast are grey, forming a distinctive lighter collar. It has a strong black bill and black legs.',
+
+    habitat: [
+      'Urban areas and towns',
+      'Villages and human settlements',
+      'Gardens and parks',
+      'Farmland and cultivated areas',
+      'Coastal settlements',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bangladesh',
+      'Sri Lanka',
+      'Myanmar',
+    ],
+
+    continents: [
+      'Asia',
+      'Africa',
+    ],
+
+    diet:
+      'An omnivorous scavenger that eats food scraps, insects, fruits, grains, carrion, and occasionally eggs and young birds.',
+
+    behavior:
+      'Highly adaptable and often found around people. It is noisy and social, frequently gathering in groups to feed and roost. It builds nests high in trees.',
+
+    funFacts: [
+      'House Crows are highly intelligent and can adapt their feeding habits to changing surroundings.',
+      'They often gather in large groups at communal roosting sites.',
+      'They sometimes work together to mob and drive away larger birds of prey.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is commonly found around human settlements and city streets.',
+      'It has a black head and wings with a distinctive grey neck.',
+      'It belongs to the crow family, known for intelligence and adaptability.',
+    ],
+
+    difficulty: 'easy',
+
+    aliases: [
+      'Indian House Crow',
+      'Grey-necked Crow',
+      'Indian Crow',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'scaly_breasted_munia',
+    commonName: 'Scaly-breasted Munia',
+    scientificName: 'Lonchura punctulata',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794225894/Scaly-breasted_munia__bfosya.jpg',
+
+    size: {
+      minCm: 11,
+      maxCm: 12,
+      category: 'small',
+    },
+
+    features:
+      'A tiny finch-like bird with rich chestnut-brown upperparts, a dark brown head, and whitish underparts covered in distinctive dark scale-like markings. It has a short, thick, dark bill.',
+
+    habitat: [
+      'Grasslands and open fields',
+      'Paddy fields and farmland',
+      'Gardens and parks',
+      'Scrub and secondary growth',
+      'Open woodland edges',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bhutan',
+      'Bangladesh',
+      'Sri Lanka',
+    ],
+
+    continents: [
+      'Asia',
+    ],
+
+    diet:
+      'Feeds mainly on grass seeds and cultivated grains such as rice. It also eats berries and occasionally small insects.',
+
+    behavior:
+      'A highly social bird that usually forages in small or large flocks. It often clings to grass stems and seed heads while feeding and communicates through soft calls and whistles.',
+
+    funFacts: [
+      'It is also known as the Spotted Munia and Nutmeg Mannikin.',
+      'Both parents help build a large, dome-shaped nest using grass and leaves.',
+      'Its strong, conical bill helps it remove and crack seeds from grass heads.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This tiny bird is often seen in groups around grasslands and paddy fields.',
+      'Its white belly has distinctive dark markings resembling fish scales.',
+      'It belongs to the finch family and feeds mainly on seeds.',
+    ],
+
+    difficulty: 'easy',
+
+    aliases: [
+      'Spotted Munia',
+      'Nutmeg Mannikin',
+      'Spice Finch',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'little_egret',
+    commonName: 'Little Egret',
+    scientificName: 'Egretta garzetta',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794226160/Little-Egret_tvb0zk.jpg',
+
+    size: {
+      minCm: 55,
+      maxCm: 65,
+      category: 'large',
+    },
+
+    features:
+      'An elegant, slender white waterbird with a long neck, pointed black bill, black legs, and bright yellow feet. During the breeding season, it develops two long, delicate plumes at the back of its head.',
+
+    habitat: [
+      'Lakes and ponds',
+      'Rivers and canals',
+      'Marshes and wetlands',
+      'Estuaries and mudflats',
+      'Coastal lagoons and mangroves',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bangladesh',
+      'Sri Lanka',
+    ],
+
+    continents: [
+      'Asia',
+      'Europe',
+      'Africa',
+      'Oceania',
+    ],
+
+    diet:
+      'Feeds mainly on small fish, frogs, crustaceans, aquatic insects, and other small water-dwelling animals.',
+
+    behavior:
+      'Usually hunts in shallow water, walking slowly or standing still before striking quickly at prey. It may shuffle its feet or spread its wings to disturb or locate prey. It often feeds in groups and nests in colonies with other waterbirds.',
+
+    funFacts: [
+      'Its bright yellow feet can look like tiny golden slippers against its dark legs.',
+      'During the breeding season, it grows two long ornamental plumes on the back of its head.',
+      'It sometimes uses its feet and wings to disturb small fish and other prey hiding underwater.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is commonly found around lakes, ponds, rivers, and wetlands.',
+      'It has completely white plumage, a black bill, and bright yellow feet.',
+      'It is a slender member of the heron and egret family.',
+    ],
+
+    difficulty: 'medium',
+
+    aliases: [
+      'Lesser Egret',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'black_drongo',
+    commonName: 'Black Drongo',
+    scientificName: 'Dicrurus macrocercus',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794226521/Black_Drongo_ikpok9.jpg',
+
+    size: {
+      minCm: 28,
+      maxCm: 31,
+      category: 'medium',
+    },
+
+    features:
+      'A glossy black bird with a slightly bluish sheen and a long, deeply forked tail. It has a strong black bill and a small white spot near the base of the bill. Its eyes are dark brown.',
+
+    habitat: [
+      'Open grasslands and fields',
+      'Agricultural areas and farmland',
+      'Wetlands and marshes',
+      'Forest edges and open woodland',
+      'Parks and rural settlements',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bhutan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Myanmar',
+    ],
+
+    continents: [
+      'Asia',
+    ],
+
+    diet:
+      'Feeds mainly on insects such as grasshoppers, beetles, termites, wasps, bees, and dragonflies. It catches many insects in flight and also picks them from the ground or vegetation.',
+
+    behavior:
+      'Often perches on exposed branches, fences, or electric wires before swooping down to catch insects. It is famously fearless and aggressively chases much larger birds that approach its nesting territory.',
+
+    funFacts: [
+      'It is sometimes called the King Crow because of its fearless attacks on much larger birds.',
+      'Farmers sometimes provide artificial perches in fields because the bird helps control insect pests.',
+      'It has a wide variety of calls, including harsh scolding sounds and clear whistles.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is commonly seen perched on electric wires and exposed branches in open fields.',
+      'It has glossy black feathers and a long, deeply forked tail.',
+      'It is nicknamed the King Crow because it fearlessly attacks much larger birds.',
+    ],
+
+    difficulty: 'medium',
+
+    aliases: [
+      'King Crow',
+      'Black King Crow',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'red_wattled_lapwing',
+    commonName: 'Red-wattled Lapwing',
+    scientificName: 'Vanellus indicus',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794226992/Red-wattled-lapwing_pqgccm.jpg',
+
+    size: {
+      minCm: 30,
+      maxCm: 35,
+      category: 'medium',
+    },
+
+    features:
+      'A distinctive long-legged bird with brown upperparts, a black head, neck, and breast, and white patches along the sides of its face and body. It has a bright red fleshy wattle in front of each eye, a red bill with a black tip, and long yellow legs.',
+
+    habitat: [
+      'Wetlands and marshes',
+      'Ponds, lakes, and riverbanks',
+      'Open grasslands and fields',
+      'Agricultural land and ploughed fields',
+      'Open areas near human settlements',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Afghanistan',
+      'Nepal',
+      'Bhutan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Myanmar',
+    ],
+
+    continents: [
+      'Asia',
+    ],
+
+    diet:
+      'Feeds mainly on insects, grubs, worms, molluscs, and other small invertebrates. It may also eat seeds and other plant matter.',
+
+    behavior:
+      'Usually seen walking or running in short bursts across open ground while searching for food. It is extremely alert and produces loud alarm calls when disturbed. It nests directly on the ground, often in open areas near water.',
+
+    funFacts: [
+      'Its loud alarm call is often described as sounding like "Did we do it?"',
+      'It lays its eggs directly on the ground, usually in a shallow scrape among stones or soil.',
+      'Both parents help protect their eggs and chicks, sometimes using distraction displays to draw predators away.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird is often found walking around open fields and near water bodies.',
+      'It has a black chest, brown back, yellow legs, and bright red facial wattles.',
+      'Its loud alarm call sounds remarkably like "Did we do it?"',
+    ],
+
+    difficulty: 'medium',
+
+    aliases: [
+      'Red-wattled Plover',
+      'Titeeri',
+      'Titodi',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'asian_green_bee_eater',
+    commonName: 'Asian Green Bee-eater',
+    scientificName: 'Merops orientalis',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794227212/Asian_green_bee-eater_kuh6dp.jpg',
+
+    size: {
+      minCm: 16,
+      maxCm: 18,
+      category: 'small',
+    },
+
+    features:
+      'A slender, bright green bird with a golden-rufous crown, bluish chin and throat, a narrow black stripe through the eye, and a slender slightly curved black bill. Its two elongated central tail feathers form distinctive streamers.',
+
+    habitat: [
+      'Open grasslands and fields',
+      'Dry scrubland and open woodland',
+      'Farmland and plantations',
+      'Rural gardens and parks',
+      'Sandy riverbanks and dry riverbeds',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Afghanistan',
+      'Nepal',
+      'Bangladesh',
+      'Bhutan',
+      'Sri Lanka',
+      'Myanmar',
+    ],
+
+    continents: [
+      'Asia',
+      'Africa',
+    ],
+
+    diet:
+      'Feeds mainly on flying insects, including bees, wasps, ants, grasshoppers, beetles, dragonflies, and flies.',
+
+    behavior:
+      'Usually perches on exposed branches, bushes, or wires while watching for flying insects. It launches into the air to catch prey and often returns to its perch, where it beats insects against the branch to remove stings and break their exoskeletons. It nests in tunnels excavated in sandy banks.',
+
+    funFacts: [
+      'It removes the stings of bees and wasps by repeatedly striking them against its perch before eating them.',
+      'Its two elongated central tail feathers form distinctive streamers that make it easy to recognise.',
+      'It excavates long nesting tunnels in sandy or earthen banks.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This bird often sits on exposed wires and branches while watching for insects.',
+      'It has bright green feathers, a blue throat, and two long tail streamers.',
+      'It catches bees and wasps in flight and belongs to the bee-eater family.',
+    ],
+
+    difficulty: 'medium',
+
+    aliases: [
+      'Green Bee-eater',
+      'Little Green Bee-eater',
+      'Small Bee-eater',
+    ],
+
+    active: true,
+  },
+  {
+    id: 'common_tailorbird',
+    commonName: 'Common Tailorbird',
+    scientificName: 'Orthotomus sutorius',
+    image: 'https://res.cloudinary.com/dfye11jlj/image/upload/v1794227453/Common-tailorbird_cg0aaa.jpg',
+
+    size: {
+      minCm: 10,
+      maxCm: 14,
+      category: 'small',
+    },
+
+    features:
+      'A tiny, active bird with olive-green upperparts, pale whitish underparts, and a distinctive rufous forehead and crown. It has a slender pointed bill and a long tail that it often holds upright.',
+
+    habitat: [
+      'Gardens and parks',
+      'Shrublands and bushes',
+      'Forest edges',
+      'Open woodland',
+      'Farmland and cultivated areas',
+      'Urban green spaces',
+    ],
+
+    range: [
+      'India',
+      'Pakistan',
+      'Nepal',
+      'Bhutan',
+      'Bangladesh',
+      'Sri Lanka',
+      'Myanmar',
+    ],
+
+    continents: [
+      'Asia',
+    ],
+
+    diet:
+      'Feeds mainly on tiny insects, insect eggs, and larvae. It also consumes small fruits, berries, seeds, and flower nectar.',
+
+    behavior:
+      'A restless and active bird that moves quickly through bushes and low vegetation, searching for insects. Usually seen alone or in pairs. It builds its nest by piercing the edges of leaves and stitching them together with plant fibres or spider silk.',
+
+    funFacts: [
+      'It gets its name from its unusual nesting technique of stitching leaves together using its bill.',
+      'Its nest is often hidden inside a folded or joined leaf, making it difficult to spot.',
+      'It was immortalised as Darzee, the tailorbird, in Rudyard Kipling’s The Jungle Book.',
+    ],
+
+    conservationStatus: 'Least Concern',
+
+    hints: [
+      'This tiny bird is commonly found hopping around bushes and garden plants.',
+      'It has olive-green feathers, a rusty-red forehead, and an upright tail.',
+      'It is famous for stitching leaves together to make its nest.',
+    ],
+
+    difficulty: 'easy',
+
+    aliases: [
+      'Long-tailed Tailorbird',
+      'Toontooni',
+    ],
+
+    active: true,
   },
 ];
 
