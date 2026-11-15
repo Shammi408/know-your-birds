@@ -1,8 +1,13 @@
+
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useTheme } from '@/hooks/use-theme';
+
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Spacing } from '@/constants/theme';
+
 import {
   BirdBankEntry,
   getBirdBankEntries,
@@ -10,7 +15,8 @@ import {
 
 export default function BirdBankScreen() {
   const router = useRouter();
-  
+  const theme = useTheme();
+
   const [entries, setEntries] = useState<BirdBankEntry[]>([]);
 
   useEffect(() => {
@@ -39,80 +45,144 @@ export default function BirdBankScreen() {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Bird Bank
-      </ThemedText>
+    <ThemedView style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <ThemedView style={styles.header}>
+          <ThemedText type="title">
+            Bird Bank
+          </ThemedText>
 
-      {entries.map((entry) => (
-        <Pressable
-          key={entry.bird.id}
-          onPress={() =>
-            router.push({
-              pathname: '/bird-details',
-              params: {
-                birdId: entry.bird.id,
-                source: 'bird-bank',
-              },
-            })
-          }
-        >
-          <ThemedView
-            type="backgroundElement"
-            style={styles.card}
+          <ThemedText
+            themeColor="textSecondary"
+            style={styles.subtitle}
           >
-            {entry.status === 'not_encountered' ? (
-              <>
-                <ThemedText type="subtitle">
-                  Unknown Bird
-                </ThemedText>
+            Your collection of discovered birds.
+          </ThemedText>
+        </ThemedView>
 
-                <ThemedText>
-                  Not Encountered
-                </ThemedText>
-              </>
-            ) : (
-              <>
-                <ThemedText type="subtitle">
-                  {entry.bird.commonName}
-                </ThemedText>
+        {/* Bird entries */}
+        {entries.map((entry) => {
+          const isUnknown = entry.status === 'not_encountered';
 
-                <ThemedText>
-                  {entry.bird.scientificName}
-                </ThemedText>
+          return (
+            <Pressable
+              key={entry.bird.id}
+              onPress={() =>
+                router.push({
+                  pathname: '/bird-details',
+                  params: {
+                    birdId: entry.bird.id,
+                    source: 'bird-bank',
+                  },
+                })
+              }
+            >
+              <ThemedView
+                type="backgroundElement"
+                style={[
+                  styles.card,
+                  {
+                    borderColor: theme.backgroundSelected,
+                  },
+                ]}
+              >
+                {/* Card content */}
+                <View style={styles.cardContent}>
+                  <ThemedText style={styles.birdName}>
+                    {isUnknown
+                      ? 'Unknown Bird'
+                      : entry.bird.commonName}
+                  </ThemedText>
 
-                <ThemedText style={styles.status}>
-                  {entry.status === 'identified'
-                    ? 'Identified'
-                    : 'Encountered'}
-                </ThemedText>
-              </>
-            )}
-          </ThemedView>
-        </Pressable>
-      ))}
-    </ScrollView>
+                  {!isUnknown && (
+                    <ThemedText
+                      themeColor="textSecondary"
+                      style={styles.scientificName}
+                    >
+                      {entry.bird.scientificName}
+                    </ThemedText>
+                  )}
+
+                  {/* Status badge */}
+                  <ThemedView
+                    type="backgroundSelected"
+                    style={styles.statusBadge}
+                  >
+                    <ThemedText style={styles.statusText}>
+                      {isUnknown
+                        ? 'Not Encountered'
+                        : entry.status === 'identified'
+                          ? 'Identified'
+                          : 'Encountered'}
+                    </ThemedText>
+                  </ThemedView>
+                </View>
+              </ThemedView>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    paddingBottom: 40,
+    flex: 1,
   },
 
-  title: {
-    marginBottom: 20,
+  content: {
+    paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.two,
+    paddingBottom: 100,
+  },
+
+  header: {
+    alignItems: 'center',
+    marginBottom: Spacing.four,
+  },
+
+  subtitle: {
+    marginTop: Spacing.two,
+    textAlign: 'center',
   },
 
   card: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 16,
+    borderWidth: 1,
+    elevation: 2,
   },
 
-  status: {
-    marginTop: 6,
+  cardContent: {
+    alignItems: 'flex-start',
+  },
+
+  birdName: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+
+  scientificName: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginTop: Spacing.one,
+  },
+
+  statusBadge: {
+    marginTop: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.one,
+    borderRadius: 8,
+  },
+
+  statusText: {
+    fontSize: 13,
     fontWeight: '600',
   },
 });

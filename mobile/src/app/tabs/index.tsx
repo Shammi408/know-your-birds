@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
+
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { setBirdStatus } from '../../storage/birdBankStorage';
-import { getDailyBird } from '../../data/dailyBird';
-import { updateStreak } from '../../storage/streakStorage';
 import {
   Image,
   Pressable,
@@ -15,24 +13,38 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useTheme } from '@/hooks/use-theme';
 import { Spacing } from '@/constants/theme';
+
+import { setBirdStatus } from '../../storage/birdBankStorage';
+import { getDailyBird } from '../../data/dailyBird';
+import { updateStreak, getStreakData } from '../../storage/streakStorage';
 import {
   getDailyChallengeCompletedDate,
   markDailyChallengeCompleted,
 } from '../../storage/dailyChallengeStorage';
-import { getProfileData, addXp, } from '../../storage/profileStorage';
+import { addXp } from '../../storage/profileStorage';
 
-const today = new Date().toISOString().split('T')[0];
-const DAILY_BIRD = getDailyBird(today);
 const STARTING_SCORE = 100;
 const WRONG_GUESS_PENALTY = 10;
 const HINT_PENALTY = 10;
 const GIVE_UP_SCORE = 10;
 
+// Use the device's local calendar date rather than UTC.
+function getLocalDate() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 export default function HomeScreen() {
   const router = useRouter();
+  const theme = useTheme();
 
-  const today = new Date().toISOString().split('T')[0];
+  const today = getLocalDate();
   const dailyBird = getDailyBird(today);
 
   const [guess, setGuess] = useState('');
@@ -40,13 +52,18 @@ export default function HomeScreen() {
   const [hintIndex, setHintIndex] = useState(-1);
   const [message, setMessage] = useState('');
   const [gameCompleted, setGameCompleted] = useState(false);
-  const [dailyChallengeCompleted, setDailyChallengeCompleted] = useState(false);
+  const [dailyChallengeCompleted, setDailyChallengeCompleted] =
+    useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
-  
-  
   useEffect(() => {
-    async function checkDailyChallenge() {
-      const completedDate = await getDailyChallengeCompletedDate();
+    async function loadHomeData() {
+      const [completedDate, streakData] = await Promise.all([
+        getDailyChallengeCompletedDate(),
+        getStreakData(),
+      ]);
+
+      setCurrentStreak(streakData.currentStreak);
 
       if (completedDate === today) {
         setDailyChallengeCompleted(true);
@@ -54,13 +71,32 @@ export default function HomeScreen() {
       }
     }
 
-    checkDailyChallenge();
+    loadHomeData();
   }, [today]);
 
+  const finishChallenge = async (identified: boolean, earnedXp: number) => {
+    setGameCompleted(true);
+
+    await setBirdStatus(
+      dailyBird.id,
+      identified ? 'identified' : 'encountered'
+    );
+    await markDailyChallengeCompleted(today);
+    await updateStreak(today);
+    await addXp(earnedXp);
+
+    router.replace({
+      pathname: '/result',
+      params: {
+        score: earnedXp.toString(),
+        identified: identified ? 'true' : 'false',
+        birdId: dailyBird.id,
+      },
+    });
+  };
+
   const handleGuess = async () => {
-    if (gameCompleted) {
-      return;
-    }
+    if (gameCompleted) return;
 
     const trimmedGuess = guess.trim();
 
@@ -68,6 +104,7 @@ export default function HomeScreen() {
       setMessage('Please enter a bird name.');
       return;
     }
+
     const normalizedGuess = trimmedGuess.toLowerCase();
 
     const isCorrect =
@@ -76,25 +113,9 @@ export default function HomeScreen() {
         (alias) => normalizedGuess === alias.toLowerCase()
       );
 
-
     if (isCorrect) {
-      setGameCompleted(true);
       setMessage('Correct! You identified the bird!');
-
-      await setBirdStatus(dailyBird.id, 'identified');
-      await markDailyChallengeCompleted(today);
-      await updateStreak(today);
-      await addXp(score);
-
-      router.replace({
-        pathname: '/result',
-        params: {
-          score: score.toString(),
-          identified: 'true',
-          birdId: dailyBird.id,
-        },
-      });
-
+      await finishChallenge(true, score);
       return;
     }
 
@@ -112,37 +133,18 @@ export default function HomeScreen() {
     setGuess('');
 
     if (nextScore === 0) {
-      setGameCompleted(true);
-
-      await setBirdStatus( dailyBird.id, 'encountered');
-      await markDailyChallengeCompleted(today);
-      await updateStreak(today);
-      await addXp(GIVE_UP_SCORE);
-
-      router.replace({
-        pathname: '/result',
-        params: {
-          score: GIVE_UP_SCORE.toString(),
-          identified: 'false',
-          birdId: dailyBird.id,
-        },
-      });
-
+      await finishChallenge(false, GIVE_UP_SCORE);
       return;
     }
 
     setMessage('Not quite. Try again!');
   };
 
-  /*
-   * The image starts heavily blurred.
-   *
-   * After each wrong guess:
-   * 25 -> 17 -> 9
-   *
-   * Once the bird is correctly identified:
-   * 0 -> completely clear
-   */
+  const handleGiveUp = async () => {
+    if (gameCompleted) return;
+    await finishChallenge(false, GIVE_UP_SCORE);
+  };
+
   const blurAmount = gameCompleted
     ? 0
     : hintIndex === -1
@@ -151,173 +153,179 @@ export default function HomeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      {!dailyChallengeCompleted && (
-        <SafeAreaView style={styles.safeArea}>
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            {/* Header */}
-            <ThemedView style={styles.header}>
-              <ThemedText type="title" style={styles.title}>
-                Know Your Birds
-              </ThemedText>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Header */}
+          <ThemedView style={styles.header}>
+            <ThemedText type="title" style={styles.title}>
+              Know Your Birds
+            </ThemedText>
 
-              <ThemedText style={styles.subtitle}>
-                Guess the Bird of the Day
-              </ThemedText>
-            </ThemedView>
-
-            {/* Streak */}
-            <ThemedView style={styles.streakRow}>
-              <ThemedText style={styles.streakText}>
-                Streak: 0 days
-              </ThemedText>
-            </ThemedView>
-
-            {/* Daily Challenge */}
-            <ThemedView
-              type="backgroundElement"
-              style={styles.challengeCard}
+            <ThemedText
+              themeColor="textSecondary"
+              style={styles.subtitle}
             >
-              <ThemedText type="subtitle" style={styles.challengeTitle}>
-                Today's Bird
-              </ThemedText>
+              Guess the Bird of the Day
+            </ThemedText>
+          </ThemedView>
 
-              {/* Bird Image */}
-              <View style={styles.imageContainer}>
-                <Image
-                  source={{ uri: dailyBird.image }}
-                  style={styles.birdImage}
-                  resizeMode="cover"
-                  blurRadius={blurAmount}
-                />
-              </View>
+          {/* Streak */}
+          <ThemedView
+            type="backgroundElement"
+            style={styles.streakCard}
+          >
+            <ThemedText style={styles.streakText}>
+              🔥 Current Streak: {currentStreak}{' '}
+              {currentStreak === 1 ? 'day' : 'days'}
+            </ThemedText>
+          </ThemedView>
 
-              {/* Score */}
-              <ThemedText style={styles.score}>
-                Score: {score}
-              </ThemedText>
+          {/* Daily Challenge */}
+          <ThemedView
+            type="backgroundElement"
+            style={styles.challengeCard}
+          >
+            <ThemedText type="subtitle" style={styles.challengeTitle}>
+              Today's Challenge
+            </ThemedText>
 
-              {/* Hint */}
-              {hintIndex >= 0 && (
-                <View style={styles.hintBox}>
-                  <ThemedText style={styles.hintLabel}>
-                    Hint
-                  </ThemedText>
-
-                  <ThemedText style={styles.hintText}>
-                    {dailyBird.hints[hintIndex]}
-                  </ThemedText>
+            {!dailyChallengeCompleted ? (
+              <>
+                {/* Bird Image */}
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={{ uri: dailyBird.image }}
+                    style={styles.birdImage}
+                    resizeMode="cover"
+                    blurRadius={blurAmount}
+                  />
                 </View>
-              )}
 
-              {/* Question */}
-              <ThemedText style={styles.question}>
-                What bird is this?
-              </ThemedText>
+                {/* Score */}
+                <ThemedView
+                  type="backgroundSelected"
+                  style={styles.scoreCard}
+                >
+                  <ThemedText themeColor="textSecondary">
+                    Your Daily Score
+                  </ThemedText>
+                  <ThemedText style={styles.score}>
+                    {score} XP
+                  </ThemedText>
+                </ThemedView>
 
-              {/* Guess Input */}
-              <TextInput
-                value={guess}
-                onChangeText={setGuess}
-                style={styles.input}
-                placeholder="Enter bird name"
-                placeholderTextColor="#888"
-                autoCapitalize="words"
-                autoCorrect={false}
-                editable={!gameCompleted}
-                onSubmitEditing={handleGuess}
-              />
+                {/* Hints */}
+                {hintIndex >= 0 && (
+                  <ThemedView
+                    type="backgroundSelected"
+                    style={styles.hintBox}
+                  >
+                    <ThemedText style={styles.hintLabel}>
+                      💡 Hint {hintIndex + 1}
+                    </ThemedText>
 
-              {/* Guess Button */}
-              <Pressable
-                style={[
-                  styles.guessButton,
-                  gameCompleted && styles.guessButtonDisabled,
-                ]}
-                onPress={handleGuess}
-                disabled={gameCompleted}
-              >
-                <ThemedText style={styles.guessButtonText}>
-                  {gameCompleted ? 'COMPLETED' : 'GUESS'}
+                    <ThemedText style={styles.hintText}>
+                      {dailyBird.hints[hintIndex]}
+                    </ThemedText>
+                  </ThemedView>
+                )}
+
+                {/* Question */}
+                <ThemedText style={styles.question}>
+                  What bird is this?
                 </ThemedText>
-              </Pressable>
-              <Pressable
-                style={styles.giveUpButton}
-                onPress={ async () => {
-                  await setBirdStatus(dailyBird.id, 'encountered');
-                  await markDailyChallengeCompleted(today);
-                  await updateStreak(today);
-                  await addXp(GIVE_UP_SCORE);
-                  router.replace({
-                    pathname: '/result',
-                    params: {
-                      score: GIVE_UP_SCORE.toString(),
-                      identified: 'false',
-                      birdId: dailyBird.id,
+
+                {/* Guess Input */}
+                <TextInput
+                  value={guess}
+                  onChangeText={setGuess}
+                  style={[
+                    styles.input,
+                    {
+                      color: theme.text,
+                      borderColor: theme.backgroundSelected,
+                      backgroundColor: theme.background,
                     },
-                  });
-                }}
-                disabled={gameCompleted}
-              >
-                <ThemedText style={styles.giveUpButtonText}>
-                  I DON'T KNOW
+                  ]}
+                  placeholder="Enter bird name"
+                  placeholderTextColor={theme.text}
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  editable={!gameCompleted}
+                  onSubmitEditing={handleGuess}
+                  returnKeyType="done"
+                />
+
+                {/* Guess Button */}
+                <Pressable
+                  style={[
+                    styles.guessButton,
+                    { backgroundColor: theme.backgroundSelected },
+                    gameCompleted && styles.disabledButton,
+                  ]}
+                  onPress={handleGuess}
+                  disabled={gameCompleted}
+                >
+                  <ThemedText style={styles.buttonText}>
+                    GUESS
+                  </ThemedText>
+                </Pressable>
+
+                {/* Give Up Button */}
+                <Pressable
+                  style={[
+                    styles.giveUpButton,
+                    { borderColor: theme.backgroundSelected },
+                    gameCompleted && styles.disabledButton,
+                  ]}
+                  onPress={handleGiveUp}
+                  disabled={gameCompleted}
+                >
+                  <ThemedText style={styles.giveUpButtonText}>
+                    I DON'T KNOW
+                  </ThemedText>
+                </Pressable>
+
+                {/* Feedback */}
+                {message !== '' && (
+                  <ThemedText style={styles.message}>
+                    {message}
+                  </ThemedText>
+                )}
+              </>
+            ) : (
+              /* Completed State */
+              <>
+                <ThemedText style={styles.completedEmoji}>
+                  🎉
                 </ThemedText>
-              </Pressable>  
 
-              {/* Feedback */}
-              {message !== '' && (
-                <ThemedText style={styles.message}>
-                  {message}
+                <ThemedText style={styles.completedTitle}>
+                  Challenge Completed!
                 </ThemedText>
-              )}
-            </ThemedView>
-          </ScrollView>
-        </SafeAreaView>
-      )}
-      {dailyChallengeCompleted && (
-        <SafeAreaView style={styles.safeArea}>
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Header */}
-            <ThemedView style={styles.header}>
-              <ThemedText type="title" style={styles.title}>
-                Know Your Birds
-              </ThemedText>
 
-              <ThemedText style={styles.subtitle}>
-                Guess the Bird of the Day
-              </ThemedText>
-            </ThemedView>
+                <ThemedText
+                  themeColor="textSecondary"
+                  style={styles.completedText}
+                >
+                  You've already completed today's bird challenge.
+                </ThemedText>
 
-            {/* Completed State */}
-            <ThemedView
-              type="backgroundElement"
-              style={styles.challengeCard}
-            >
-              <ThemedText type="subtitle" style={styles.challengeTitle}>
-                Today's Challenge
-              </ThemedText>
-
-              <ThemedText style={styles.completedTitle}>
-                Challenge Completed! 🎉
-              </ThemedText>
-
-              <ThemedText style={styles.completedText}>
-                You've already completed today's bird challenge.
-              </ThemedText>
-
-              <ThemedText style={styles.completedSubtext}>
-                Come back tomorrow for a new bird!
-              </ThemedText>
-            </ThemedView>
-          </ScrollView>
-        </SafeAreaView>
-      )}
+                <ThemedText
+                  themeColor="textSecondary"
+                  style={styles.completedSubtext}
+                >
+                  Come back tomorrow for a new bird!
+                </ThemedText>
+              </>
+            )}
+          </ThemedView>
+        </ScrollView>
+      </SafeAreaView>
     </ThemedView>
   );
 }
@@ -333,12 +341,13 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    paddingBottom: Spacing.six,
+    paddingBottom: 100,
   },
 
   header: {
     alignItems: 'center',
     marginTop: Spacing.two,
+    marginBottom: Spacing.three,
   },
 
   title: {
@@ -350,9 +359,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  streakRow: {
+  streakCard: {
     alignItems: 'center',
-    marginTop: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: Spacing.three,
+    marginBottom: Spacing.three,
   },
 
   streakText: {
@@ -362,23 +373,26 @@ const styles = StyleSheet.create({
 
   challengeCard: {
     width: '100%',
-    marginTop: Spacing.three,
     padding: Spacing.four,
     borderRadius: Spacing.four,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(128,128,128,0.2)',
+    elevation: 2,
   },
 
   challengeTitle: {
     textAlign: 'center',
+    marginBottom: Spacing.one,
   },
 
   imageContainer: {
     width: '100%',
-    height: 190,
+    height: 210,
     marginTop: Spacing.three,
-    borderRadius: Spacing.four,
+    borderRadius: Spacing.three,
     overflow: 'hidden',
-    backgroundColor: '#000000',
+    backgroundColor: '#808080',
   },
 
   birdImage: {
@@ -386,108 +400,114 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  score: {
+  scoreCard: {
+    width: '100%',
+    alignItems: 'center',
+    padding: Spacing.three,
     marginTop: Spacing.three,
-    fontSize: 18,
+    borderRadius: Spacing.three,
+  },
+
+  score: {
+    marginTop: Spacing.one,
+    fontSize: 26,
     fontWeight: '700',
   },
 
   hintBox: {
     width: '100%',
-    marginTop: Spacing.two,
-    padding: Spacing.two,
-    borderRadius: Spacing.two,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    marginTop: Spacing.three,
+    padding: Spacing.three,
+    borderRadius: Spacing.three,
   },
 
   hintLabel: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
   },
 
   hintText: {
-    marginTop: Spacing.one,
-    fontSize: 14,
-    lineHeight: 20,
+    marginTop: Spacing.two,
+    fontSize: 15,
+    lineHeight: 22,
   },
 
   question: {
-    marginTop: Spacing.two,
+    marginTop: Spacing.four,
     fontSize: 17,
     fontWeight: '600',
   },
 
   input: {
     width: '100%',
-    height: 44,
-    marginTop: Spacing.two,
+    height: 50,
+    marginTop: Spacing.three,
     paddingHorizontal: Spacing.three,
     borderWidth: 1,
-    borderColor: '#777',
     borderRadius: Spacing.two,
-    color: '#fff',
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    fontSize: 16,
   },
 
   guessButton: {
     width: '100%',
-    height: 44,
-    marginTop: Spacing.two,
+    height: 48,
+    marginTop: Spacing.three,
     borderRadius: Spacing.two,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
   },
 
-  guessButtonDisabled: {
-    opacity: 0.5,
-  },
-
-  guessButtonText: {
-    color: '#000000',
+  buttonText: {
     fontWeight: '700',
   },
 
   giveUpButton: {
-  width: '100%',
-  height: 44,
-  marginTop: Spacing.two,
-  borderRadius: Spacing.two,
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderWidth: 1,
-  borderColor: '#777',
+    width: '100%',
+    height: 48,
+    marginTop: Spacing.two,
+    borderRadius: Spacing.two,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
   },
 
   giveUpButtonText: {
     fontWeight: '600',
   },
-  
+
+  disabledButton: {
+    opacity: 0.5,
+  },
+
   message: {
-    marginTop: Spacing.two,
+    marginTop: Spacing.three,
     textAlign: 'center',
     fontSize: 14,
     fontWeight: '600',
   },
-  
+
+  completedEmoji: {
+    fontSize: 42,
+    marginTop: Spacing.four,
+  },
+
   completedTitle: {
     fontSize: 24,
     fontWeight: '700',
     textAlign: 'center',
-    marginTop: 16,
+    marginTop: Spacing.two,
   },
 
   completedText: {
     fontSize: 16,
     textAlign: 'center',
-    marginTop: 12,
+    marginTop: Spacing.three,
     lineHeight: 24,
   },
 
   completedSubtext: {
     fontSize: 14,
     textAlign: 'center',
-    marginTop: 8,
-    opacity: 0.7,
+    marginTop: Spacing.two,
   },
 });

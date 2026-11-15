@@ -1,17 +1,27 @@
+
+import { useEffect, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  Text,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useTheme } from '@/hooks/use-theme';
 import { Spacing } from '@/constants/theme';
 
-import { useState, useEffect } from 'react';
 import { getBirdById } from '../data/birds';
 import { getStreakData } from '../storage/streakStorage';
 
 export default function ResultScreen() {
   const router = useRouter();
+  const theme = useTheme();
 
   const { score, identified, birdId } = useLocalSearchParams<{
     score?: string;
@@ -22,6 +32,7 @@ export default function ResultScreen() {
   const dailyScore = Number(score ?? 0);
   const isIdentified = identified === 'true';
   const bird = birdId ? getBirdById(birdId) : undefined;
+
   const [currentStreak, setCurrentStreak] = useState(0);
 
   useEffect(() => {
@@ -33,6 +44,18 @@ export default function ResultScreen() {
     loadStreak();
   }, []);
 
+  const handleLearnMore = () => {
+    if (!birdId || !bird) return;
+
+    router.push({
+      pathname: '/bird-details',
+      params: {
+        birdId,
+        source: 'bird-bank',
+      },
+    });
+  };
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -40,94 +63,167 @@ export default function ResultScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.header}>
+          {/* Header */}
+          <ThemedView style={styles.header}>
             <ThemedText type="title" style={styles.title}>
               Daily Challenge
             </ThemedText>
 
-            <ThemedText style={styles.resultStatus}>
-              {isIdentified ? 'Bird Identified!' : 'Bird Encountered!'}
-            </ThemedText>
-          </View>
+            <View style={styles.resultStatusContainer}>
+              <ThemedText style={styles.resultEmoji}>
+                {isIdentified ? '🎉' : '🐦'}
+              </ThemedText>
 
+              <ThemedText style={styles.resultStatus}>
+                {isIdentified ? 'Bird Identified!' : 'Bird Encountered!'}
+              </ThemedText>
+            </View>
+
+            <ThemedText
+              themeColor="textSecondary"
+              style={styles.subtitle}
+            >
+              {isIdentified
+                ? 'Great work! You identified today’s bird.'
+                : 'Every encounter is a step towards learning.'}
+            </ThemedText>
+          </ThemedView>
+
+          {/* Result Card */}
           <ThemedView
             type="backgroundElement"
-            style={styles.card}
+            style={[
+              styles.card,
+              { borderColor: theme.backgroundSelected },
+            ]}
           >
-            <Image
-              source={{ uri: bird?.image }}
-              style={styles.birdImage}
-              resizeMode="cover"
-            />
+            {/* Bird Image */}
+            {bird?.image ? (
+              <Image
+                source={{ uri: bird.image }}
+                style={styles.birdImage}
+                resizeMode="cover"
+              />
+            ) : (
+              <View
+                style={[
+                  styles.imagePlaceholder,
+                  { backgroundColor: theme.backgroundSelected },
+                ]}
+              >
+                <ThemedText themeColor="textSecondary">
+                  Bird image unavailable
+                </ThemedText>
+              </View>
+            )}
 
+            {/* Bird Information */}
             <ThemedText type="subtitle" style={styles.birdName}>
-              {bird?.commonName}
+              {bird?.commonName ?? 'Bird'}
             </ThemedText>
 
-            <ThemedText style={styles.scientificName}>
-              {bird?.scientificName}
-            </ThemedText>
+            {bird?.scientificName && (
+              <ThemedText
+                themeColor="textSecondary"
+                style={styles.scientificName}
+              >
+                {bird.scientificName}
+              </ThemedText>
+            )}
 
+            {/* Score Summary */}
             <View style={styles.statsContainer}>
-              <View style={styles.statBox}>
-                <ThemedText style={styles.statLabel}>
+              <ThemedView
+                type="backgroundSelected"
+                style={styles.statBox}
+              >
+                <ThemedText
+                  themeColor="textSecondary"
+                  style={styles.statLabel}
+                >
                   Daily Score
                 </ThemedText>
 
                 <ThemedText style={styles.statValue}>
                   {dailyScore}
                 </ThemedText>
-              </View>
+              </ThemedView>
 
-              <View style={styles.statBox}>
-                <ThemedText style={styles.statLabel}>
+              <ThemedView
+                type="backgroundSelected"
+                style={styles.statBox}
+              >
+                <ThemedText
+                  themeColor="textSecondary"
+                  style={styles.statLabel}
+                >
                   XP Earned
                 </ThemedText>
 
                 <ThemedText style={styles.statValue}>
                   +{dailyScore}
                 </ThemedText>
-              </View>
+              </ThemedView>
 
-              <View style={styles.statBox}>
-                <ThemedText style={styles.statLabel}>
-                  Streak
+              <ThemedView
+                type="backgroundSelected"
+                style={styles.statBox}
+              >
+                <ThemedText
+                  themeColor="textSecondary"
+                  style={styles.statLabel}
+                >
+                  Current Streak
                 </ThemedText>
 
                 <ThemedText style={styles.statValue}>
-                  {currentStreak} {currentStreak === 1 ? 'day' : 'days'}
+                  🔥 {currentStreak}{' '}
+                  {currentStreak === 1 ? 'day' : 'days'}
                 </ThemedText>
-              </View>
+              </ThemedView>
             </View>
 
-            <View style={styles.statusBox}>
-              <ThemedText style={styles.statusTitle}>
-                Bird Bank
-              </ThemedText>
-
-              <ThemedText>
-                {isIdentified
-                  ? 'Added to your collection as Identified.'
-                  : 'Added to your collection as Encountered.'}
-              </ThemedText>
-            </View>
-
-            <Pressable
-              style={styles.secondaryButton}
-              onPress={() => {
-                // Learn more will be connected later.
-              }}
+            {/* Bird Bank Status */}
+            <ThemedView
+              type="backgroundSelected"
+              style={styles.statusBox}
             >
-              <ThemedText style={styles.secondaryButtonText}>
+              <ThemedText style={styles.statusTitle}>
+                Your Bird Bank
+              </ThemedText>
+
+              <ThemedText
+                themeColor="textSecondary"
+                style={styles.statusDescription}
+              >
+                {isIdentified
+                  ? 'This bird has been added to your collection as Identified.'
+                  : 'This bird has been added to your collection as Encountered.'}
+              </ThemedText>
+            </ThemedView>
+
+            {/* Actions */}
+            <Pressable
+              style={[
+                styles.secondaryButton,
+                { borderColor: theme.backgroundSelected },
+              ]}
+              onPress={handleLearnMore}
+              disabled={!bird}
+            >
+              <ThemedText style={styles.buttonText}>
                 LEARN MORE
               </ThemedText>
             </Pressable>
 
             <Pressable
-              style={styles.primaryButton}
+              style={[
+                styles.primaryButton,
+                { backgroundColor: theme.backgroundSelected },
+              ]}
               onPress={() => router.replace('/tabs')}
             >
-              <ThemedText style={styles.primaryButtonText}>
+              <ThemedText style={styles.buttonText}>
                 RETURN HOME
               </ThemedText>
             </Pressable>
@@ -149,37 +245,46 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    paddingBottom: Spacing.six,
+    paddingBottom: 100,
   },
 
   header: {
     alignItems: 'center',
     marginTop: Spacing.two,
+    marginBottom: Spacing.two,
   },
 
   title: {
     textAlign: 'center',
   },
 
-  resultStatus: {
-    marginTop: Spacing.two,
-    fontSize: 18,
-    fontWeight: '700',
+  subtitle: {
+    marginTop: Spacing.one,
     textAlign: 'center',
   },
 
   card: {
     width: '100%',
-    marginTop: Spacing.four,
+    marginTop: Spacing.three,
     padding: Spacing.four,
     borderRadius: Spacing.four,
+    borderWidth: 1,
     alignItems: 'center',
+    elevation: 2,
   },
 
   birdImage: {
     width: '100%',
     height: 220,
-    borderRadius: Spacing.four,
+    borderRadius: Spacing.three,
+  },
+
+  imagePlaceholder: {
+    width: '100%',
+    height: 180,
+    borderRadius: Spacing.three,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   birdName: {
@@ -190,7 +295,6 @@ const styles = StyleSheet.create({
   scientificName: {
     marginTop: Spacing.one,
     fontStyle: 'italic',
-    opacity: 0.7,
     textAlign: 'center',
   },
 
@@ -202,14 +306,12 @@ const styles = StyleSheet.create({
 
   statBox: {
     padding: Spacing.three,
-    borderRadius: Spacing.two,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: Spacing.three,
     alignItems: 'center',
   },
 
   statLabel: {
     fontSize: 14,
-    opacity: 0.7,
   },
 
   statValue: {
@@ -222,48 +324,61 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: Spacing.three,
     padding: Spacing.three,
-    borderRadius: Spacing.two,
-    backgroundColor: 'rgba(255,255,255,0.08)',
+    borderRadius: Spacing.three,
   },
 
   statusTitle: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
   },
 
-  statusText: {
+  statusDescription: {
     marginTop: Spacing.one,
     fontSize: 14,
-    lineHeight: 20,
+    lineHeight: 21,
   },
 
   secondaryButton: {
     width: '100%',
-    height: 46,
+    height: 48,
     marginTop: Spacing.three,
     borderWidth: 1,
-    borderColor: '#777',
     borderRadius: Spacing.two,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  secondaryButtonText: {
-    fontWeight: '700',
   },
 
   primaryButton: {
     width: '100%',
-    height: 46,
+    height: 48,
     marginTop: Spacing.two,
     borderRadius: Spacing.two,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#ffffff',
   },
 
-  primaryButtonText: {
-    color: '#000000',
+  buttonText: {
     fontWeight: '700',
+  },
+
+  resultStatusContainer: {
+    alignItems: 'center',
+    marginTop: Spacing.two,
+    paddingVertical: 6,
+  },
+
+  resultEmoji: {
+    fontSize: 36,
+    lineHeight: 50,
+    includeFontPadding: true,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+
+  resultStatus: {
+    fontSize: 22,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginTop: Spacing.one,
   },
 });

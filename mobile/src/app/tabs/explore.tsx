@@ -1,12 +1,20 @@
-import { Pressable, StyleSheet, Text, TextInput, View, ScrollView } from 'react-native';
+
+import { Pressable, ScrollView, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
+
+import { ThemedText } from '@/components/themed-text';
+import { ThemedView } from '@/components/themed-view';
+import { useTheme } from '@/hooks/use-theme';
+import { Spacing } from '@/constants/theme';
 
 import { BIRDS } from '../../data/birds';
 
 export default function ExploreScreen() {
   const router = useRouter();
+  const theme = useTheme();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'default' | 'asc' | 'desc'>('default');
   const [countryFilter, setCountryFilter] = useState('All');
@@ -33,9 +41,11 @@ export default function ExploreScreen() {
       ) {
         return false;
       }
+
       if (!query) {
         return true;
       }
+
       return (
         bird.commonName.toLowerCase().includes(query) ||
         bird.scientificName.toLowerCase().includes(query)
@@ -54,54 +64,79 @@ export default function ExploreScreen() {
     });
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Explore</Text>
+        <ScrollView
+          contentContainerStyle={styles.content}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Header */}
+          <ThemedView style={styles.header}>
+            <ThemedText type="title">
+              Explore
+            </ThemedText>
 
-          <Text style={styles.subtitle}>
-            Learn about birds from around the world.
-          </Text>
-          <View style={styles.sortRow}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search birds..."
-              placeholderTextColor="#888888"
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
+            <ThemedText style={styles.subtitle}>
+              Learn about birds from around the world.
+            </ThemedText>
+          </ThemedView>
+
+          {/* Search */}
+          <TextInput
+            style={[
+              styles.searchInput,
+              {
+                color: theme.text,
+                backgroundColor: theme.backgroundElement,
+                borderColor: theme.backgroundSelected,
+              },
+            ]}
+            placeholder="Search birds..."
+            placeholderTextColor={theme.textSecondary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            autoCorrect={false}
+          />
+
+          {/* Sorting */}
+          <ThemedView style={styles.sortRow}>
             <Pressable
               style={[
-                styles.sortButton,
-                sortOrder === 'asc' && styles.activeSortButton,
+                styles.filterButton,
+                {
+                  backgroundColor:
+                    sortOrder === 'asc'
+                      ? theme.backgroundSelected
+                      : theme.backgroundElement,
+                },
               ]}
               onPress={() => setSortOrder('asc')}
             >
-              <Text style={styles.sortButtonText}>A → Z</Text>
+              <ThemedText style={styles.buttonText}>
+                A → Z
+              </ThemedText>
             </Pressable>
 
             <Pressable
               style={[
-                styles.sortButton,
-                sortOrder === 'desc' && styles.activeSortButton,
+                styles.filterButton,
+                {
+                  backgroundColor:
+                    sortOrder === 'desc'
+                      ? theme.backgroundSelected
+                      : theme.backgroundElement,
+                },
               ]}
               onPress={() => setSortOrder('desc')}
             >
-              <Text style={styles.sortButtonText}>Z → A</Text>
+              <ThemedText style={styles.buttonText}>
+                Z → A
+              </ThemedText>
             </Pressable>
-          </View>
-          {hasActiveFilters && (
-            <Pressable
-              style={styles.resetButton}
-              onPress={() => {
-                setSearchQuery('');
-                setCountryFilter('All');
-                setSortOrder('default');
-              }}
-            >
-              <Text style={styles.resetButtonText}>Reset</Text>
-            </Pressable>
-          )}
+          </ThemedView>
+
+          {/* Country filters */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -112,205 +147,193 @@ export default function ExploreScreen() {
                 key={country}
                 style={[
                   styles.countryButton,
-                  countryFilter === country && styles.activeCountryButton,
+                  {
+                    backgroundColor:
+                      countryFilter === country
+                        ? theme.backgroundSelected
+                        : theme.backgroundElement,
+                  },
                 ]}
                 onPress={() => setCountryFilter(country)}
               >
-                <Text style={styles.countryButtonText}>
+                <ThemedText style={styles.buttonText}>
                   {country}
-                </Text>
+                </ThemedText>
               </Pressable>
             ))}
           </ScrollView>
-        </View>
-        
-        <ScrollView
-          style={styles.list}
-          showsVerticalScrollIndicator={false}
-        >
-          {displayedBirds.map((bird) => (
+
+          {/* Reset filters */}
+          {hasActiveFilters && (
             <Pressable
-              key={bird.id}
-              style={styles.birdCard}
-              onPress={() =>
-                router.push({
-                  pathname: '/bird-details',
-                  params: {
-                    birdId: bird.id,
-                    source: 'explore',
-                  },
-                })
-              }
+              style={styles.resetButton}
+              onPress={() => {
+                setSearchQuery('');
+                setCountryFilter('All');
+                setSortOrder('default');
+              }}
             >
-              <Text style={styles.birdName}>
-                {bird.commonName}
-              </Text>
-
-              <Text style={styles.scientificName}>
-                {bird.scientificName}
-              </Text>
+              <ThemedText themeColor="textSecondary">
+                Reset filters
+              </ThemedText>
             </Pressable>
-          ))}
-        </ScrollView>
+          )}
 
+          {/* Bird count */}
+          <ThemedText
+            themeColor="textSecondary"
+            style={styles.resultCount}
+          >
+            {displayedBirds.length} birds found
+          </ThemedText>
+
+          {/* Bird list */}
+          {displayedBirds.length > 0 ? (
+            displayedBirds.map((bird) => (
+              <Pressable
+                key={bird.id}
+                onPress={() =>
+                  router.push({
+                    pathname: '/bird-details',
+                    params: {
+                      birdId: bird.id,
+                      source: 'explore',
+                    },
+                  })
+                }
+              >
+                <ThemedView
+                  type="backgroundElement"
+                  style={styles.birdCard}
+                >
+                  <ThemedText style={styles.birdName}>
+                    {bird.commonName}
+                  </ThemedText>
+
+                  <ThemedText
+                    themeColor="textSecondary"
+                    style={styles.scientificName}
+                  >
+                    {bird.scientificName}
+                  </ThemedText>
+                </ThemedView>
+              </Pressable>
+            ))
+          ) : (
+            <ThemedView
+              type="backgroundElement"
+              style={styles.emptyCard}
+            >
+              <ThemedText type="subtitle">
+                No birds found
+              </ThemedText>
+
+              <ThemedText themeColor="textSecondary">
+                Try changing your search or filters.
+              </ThemedText>
+            </ThemedView>
+          )}
+        </ScrollView>
       </SafeAreaView>
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
   },
 
   safeArea: {
     flex: 1,
-    paddingHorizontal: 24,
+  },
+
+  content: {
+    paddingHorizontal: Spacing.four,
+    paddingTop: Spacing.two,
+    paddingBottom: 100,
   },
 
   header: {
     alignItems: 'center',
-    marginTop: 70,
-  },
-
-  title: {
-    color: '#ffffff',
-    fontSize: 48,
-    fontWeight: '800',
-    textAlign: 'center',
+    marginBottom: Spacing.four,
   },
 
   subtitle: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '500',
-    lineHeight: 28,
+    marginTop: Spacing.two,
     textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
-
-  card: {
-    marginTop: 60,
-    paddingHorizontal: 24,
-    paddingVertical: 36,
-    borderRadius: 28,
-    backgroundColor: '#202125',
-    alignItems: 'center',
-  },
-
-  cardEmoji: {
-    fontSize: 48,
-  },
-
-  cardTitle: {
-    color: '#ffffff',
-    fontSize: 30,
-    fontWeight: '700',
-    marginTop: 16,
-  },
-
-  cardDescription: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: '500',
-    lineHeight: 27,
-    textAlign: 'center',
-    marginTop: 16,
-  },
-  list: {
-    marginTop: 40,
-    flex: 1,
-  },
-
-  birdCard: {
-    backgroundColor: '#202125',
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 14,
-  },
-
-  birdName: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '700',
-  },
-
-  scientificName: {
-    color: '#cccccc',
-    fontSize: 15,
-    fontStyle: 'italic',
-    marginTop: 6,
   },
 
   searchInput: {
-    flex: 1,
-    backgroundColor: '#202125',
-    borderRadius: 16,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    color: '#ffffff',
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: Spacing.three,
     fontSize: 16,
   },
 
   sortRow: {
     flexDirection: 'row',
-    gap: 6,
+    gap: Spacing.two,
+    marginTop: Spacing.two,
   },
 
-  sortButton: {
-    backgroundColor: '#202125',
-    borderRadius: 14,
-    paddingHorizontal: 12,
+  filterButton: {
+    flex: 1,
     paddingVertical: 12,
+    borderRadius: 12,
     alignItems: 'center',
   },
 
-  activeSortButton: {
-    backgroundColor: '#3a3b40',
-  },
-
-  sortButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
+  buttonText: {
     fontWeight: '600',
   },
+
   countryRow: {
-    marginTop: 12,
+    marginTop: Spacing.three,
     flexGrow: 0,
-    alignSelf: 'stretch',
   },
 
   countryButton: {
-    backgroundColor: '#202125',
-    borderRadius: 14,
-    paddingHorizontal: 14,
+    paddingHorizontal: Spacing.three,
     paddingVertical: 10,
-    marginRight: 8,
+    borderRadius: 12,
+    marginRight: Spacing.two,
   },
 
-  activeCountryButton: {
-    backgroundColor: '#3a3b40',
-  },
-
-  countryButtonText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
   resetButton: {
-    alignSelf: 'center',
-    backgroundColor: '#202125',
-    borderRadius: 14,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    marginTop: 10,
+    alignSelf: 'flex-end',
+    marginTop: Spacing.two,
+    paddingVertical: Spacing.one,
   },
 
-  resetButtonText: {
-    color: '#ffffff',
+  resultCount: {
+    marginTop: Spacing.three,
+    marginBottom: Spacing.two,
     fontSize: 14,
-    fontWeight: '600',
+  },
+
+  birdCard: {
+    padding: Spacing.three,
+    borderRadius: 12,
+    marginBottom: Spacing.two,
+  },
+
+  birdName: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+
+  scientificName: {
+    fontSize: 14,
+    fontStyle: 'italic',
+    marginTop: Spacing.one,
+  },
+
+  emptyCard: {
+    padding: Spacing.four,
+    borderRadius: 12,
+    alignItems: 'center',
+    gap: Spacing.two,
   },
 });
