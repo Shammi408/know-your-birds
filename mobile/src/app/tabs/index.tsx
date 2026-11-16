@@ -24,6 +24,7 @@ import {
   markDailyChallengeCompleted,
 } from '../../storage/dailyChallengeStorage';
 import { addXp } from '../../storage/profileStorage';
+import { isCorrectAnswer } from '@/utils/answerMatching';
 
 const STARTING_SCORE = 100;
 const WRONG_GUESS_PENALTY = 10;
@@ -105,13 +106,7 @@ export default function HomeScreen() {
       return;
     }
 
-    const normalizedGuess = trimmedGuess.toLowerCase();
-
-    const isCorrect =
-      normalizedGuess === dailyBird.commonName.toLowerCase() ||
-      dailyBird.aliases.some(
-        (alias) => normalizedGuess === alias.toLowerCase()
-      );
+    const isCorrect = isCorrectAnswer(trimmedGuess, dailyBird);
 
     if (isCorrect) {
       setMessage('Correct! You identified the bird!');
